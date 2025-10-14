@@ -1,0 +1,145 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+  background-color: #000000;
+  min-height: 100vh;
+}
+
+@keyframes glitch {
+  0% {
+    transform: translate(0)
+  }
+
+  20% {
+    transform: translate(-2px, 2px)
+  }
+
+  40% {
+    transform: translate(-2px, -2px)
+  }
+
+  60% {
+    transform: translate(2px, 2px)
+  }
+
+  80% {
+    transform: translate(2px, -2px)
+  }
+
+  100% {
+    transform: translate(0)
+  }
+}
+
+:root {
+  --glitch-bg: #000000;
+  --neon-green: #00ff00;
+  --neon-pink: #ff00ff;
+  --neon-blue: #00ffff;
+  --text-color: #ffffff;
+}
+
+.App {
+  text-align: center;
+  background-color: #000000;
+  border: 2px solid #00ff00;
+  position: relative;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+h1 {
+  color: #ff00ff;
+  text-shadow: 0 0 10px #ff00ff;
+  animation: glitch 0.5s infinite;
+}
+
+.task-list {
+  background: transparent;
+  border: 1px dashed var(--neon-green);
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.task-list button {
+  background-color: var(--glitch-bg);
+  border: 1px solid var(--neon-green);
+  padding: 0.5rem 1rem;
+  color: var(--neon-green);
+}
+
+.task-list button:hover {
+  background-color: var(--neon-green);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+.add-task-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+input[type="text"] {
+  background-color: transparent;
+  border: 1px solid var(--neon-blue);
+  color: var(--text-color);
+  padding: 0.5rem;
+  flex-grow: 1;
+}
+
+button[type="submit"] {
+  background-color: transparent;
+  border: 1px solid var(--neon-pink);
+  color: var(--neon-pink);
+  padding: 0.5rem 1rem;
+}
+
+button[type="submit"]:hover {
+   background-color: var(--neon-pink);
+   color: var(--text-color);
+   cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li{
+  border: 1px solid var(--neon-green);
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-color);
+}
+
+.completed {
+ color: var(--neon-blue);
+ text-decoration: line-through;
+ opacity: 0.7;
+}
+
+input[type="checkbox"] {
+  accent-color: var(--neon-pink)
+}
+
+.task button {
+  border: 1px solid #ff0000;
+  color: #ff0000;
+}
+
+.task button:hover {
+  background-color:  #ff0000;
+  color: var(--text-color);
+}
