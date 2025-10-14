@@ -4,29 +4,25 @@
  * Паттерн: Container Component / State Manager
  */
 
-import { useState, useEffect } from 'react'
 import Task from "./Task"
 import AddTask from "./AddTask"
 import { useTasksAPI } from '../hooks/useTasksAPI'
 import { useTaskStorage } from '../hooks/useTaskStorage'
-import { useTaskManager } from '../hooks/useTaskManager'
-
-
+import { useTaskReducer } from '../hooks/useTaskReducer'
 
 const TaskList = () => {
     // 🎯 ПАТТЕРН: State Management
-    // useState - аналог let tasks = [], но с реактивностью
-    const [tasks, setTasks] = useState([])
+   
+    const {state, dispatch} = useTaskReducer()
+   
 
     // ✅ HOOK: Синхронизация с localStorage (автосохранение/загрузка)
-    useTaskStorage(tasks, setTasks)
-
-    // ✅ HOOK: Управление операциями с задачами (добавление/удаление/переключение)
-    const {onAddTask, onDelete, onToggle} = useTaskManager(setTasks)
+    useTaskStorage(state.tasks, dispatch)
 
     // ✅ HOOK: Загрузка задач из внешнего API
-    const { loadTasksFromAPI, isLoading } = useTasksAPI(onAddTask, tasks)
-
+    const { loadTasksFromAPI, isLoading } = useTasksAPI(
+        (taskData)=> dispatch({type: 'ADD_TASK', payload: taskData}),
+         state.tasks)
 
     return (
         <div className="task-list">
@@ -37,17 +33,17 @@ const TaskList = () => {
             </button>
             
             {/* ✅ КОМПОНЕНТ: Форма добавления новых задач */}
-            <AddTask onAddTask={onAddTask} />
+            <AddTask onAddTask={(taskData)=> dispatch({type: 'ADD_TASK', payload: taskData})} />
 
             {/* 🔄 ПАТТЕРН: Отрисовка списка задач */}
             <ul>
-                {tasks.map(task => (
+                {state.tasks.map(task => (
                     // ✅ КОМПОНЕНТ: Отдельная задача с callback функциями
                     <Task
                         key={task.id}          // ⚡ React key для оптимизации списков
                         task={task}            // 📦 Данные задачи (объект)
-                        onToggle={onToggle}    // 🎮 Функция переключения статуса
-                        onDelete={onDelete}    // 🗑️ Функция удаления
+                        onToggle={() => dispatch({ type: 'TOGGLE_TASK', payload: task.id })}    // 🎮 Функция переключения статуса
+                        onDelete={() => dispatch({ type: 'DELETE_TASK', payload: task.id })}    // 🗑️ Функция удаления
                     />
                 ))}
             </ul>
