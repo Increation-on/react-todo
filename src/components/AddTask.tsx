@@ -5,7 +5,14 @@
  */
 import { useAddTaskForm } from "../hooks/useAddTaskForm"
 
-const AddTask = ({ onAddTask }) => { // ✅ PROPS: Колбэк для добавления задачи в родительский компонент
+interface AddTaskProps {
+    onAddTask: (text: string) => void
+}
+
+
+const AddTask = ({ onAddTask }: AddTaskProps) => { // ✅ PROPS: Колбэк для добавления задачи в родительский компонент
+
+    
 
     // ✅ HOOK: Вся логика формы вынесена в отдельный хук
     const {handleSubmit, inputValue, setInputValue, isLoading, error} = useAddTaskForm(onAddTask)
