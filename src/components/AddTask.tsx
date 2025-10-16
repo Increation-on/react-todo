@@ -4,15 +4,14 @@
  * Паттерн: Presentational Component (отвечает только за отображение)
  */
 import { useAddTaskForm } from "../hooks/useAddTaskForm"
+import React from "react"
 
 interface AddTaskProps {
     onAddTask: (text: string) => void
 }
 
 
-const AddTask = ({ onAddTask }: AddTaskProps) => { // ✅ PROPS: Колбэк для добавления задачи в родительский компонент
-
-    
+const AddTask = React.memo(({ onAddTask }: AddTaskProps) => { // ✅ PROPS: Колбэк для добавления задачи в родительский компонент
 
     // ✅ HOOK: Вся логика формы вынесена в отдельный хук
     const {handleSubmit, inputValue, setInputValue, isLoading, error} = useAddTaskForm(onAddTask)
@@ -33,6 +32,6 @@ const AddTask = ({ onAddTask }: AddTaskProps) => { // ✅ PROPS: Колбэк д
             {/* ✅ ERROR: Условный рендеринг ошибки */}
         </form>
     )
-}
+})
 
 export default AddTask
