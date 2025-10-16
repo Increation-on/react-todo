@@ -4,11 +4,11 @@
  * Паттерн: Container Component / State Manager
  */
 
-import Task from "./Task"
-import AddTask from "./AddTask"
-import { useTasksAPI } from '../hooks/useTasksAPI'
-import { useTaskStorage } from '../hooks/useTaskStorage'
-import { useTaskReducer } from '../hooks/useTaskReducer'
+import Task from "./Task.tsx"
+import AddTask from "./AddTask.tsx"
+import { useTasksAPI } from '../hooks/useTasksAPI.jsx'
+import { useTaskStorage } from '../hooks/useTaskStorage.jsx'
+import { useTaskReducer } from '../hooks/useTaskReducer.jsx'
 
 const TaskList = () => {
     // 🎯 ПАТТЕРН: State Management

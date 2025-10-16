@@ -4,7 +4,19 @@
  * Паттерн: Presentational Component / Dumb Component
  */
 
-const Task = ({ task, onToggle, onDelete }) => {
+interface Task {
+    id: number | string,
+    text: string,
+    completed: boolean
+}
+
+interface TaskProps {
+    task: Task;
+    onToggle: (task: Task) => void;
+    onDelete: (task: Task) => void;
+}
+
+const Task = ({ task, onToggle, onDelete }: TaskProps) => {
     // ✅ PROPS: Деструктуризация пропсов для удобства доступа
     // task - данные задачи, onToggle/onDelete - callback функции
 

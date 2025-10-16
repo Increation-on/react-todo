@@ -5,12 +5,13 @@
  */
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import './App.css';
-import TaskList from './components/TaskList';
+import TaskList from './components/TaskList.tsx';
 import ActiveTasks from './components/pages/ActiveTasks';
 import CompletedTasks from './components/pages/CompletedTasks';
 import Stats from './components/pages/Stats';
 
 const App = () => {
+
   return (
     <Router>
       <div className="App">
