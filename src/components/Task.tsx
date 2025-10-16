@@ -3,6 +3,7 @@
  * Ответственность: отображение одной задачи, делегирование событий
  * Паттерн: Presentational Component / Dumb Component
  */
+import React from "react"
 
 interface Task {
     id: number | string,
@@ -12,14 +13,14 @@ interface Task {
 
 interface TaskProps {
     task: Task;
-    onToggle: (task: Task) => void;
-    onDelete: (task: Task) => void;
+    onToggle: (id: number | string) => void;  // Теперь принимает ID!
+    onDelete: (id: number | string) => void;  // Теперь принимает ID!
+    taskId: number | string;                  // Добавляем ID
 }
 
-const Task = ({ task, onToggle, onDelete }: TaskProps) => {
+const Task = React.memo(({ task, onToggle, onDelete }: TaskProps) => {
     // ✅ PROPS: Деструктуризация пропсов для удобства доступа
     // task - данные задачи, onToggle/onDelete - callback функции
-
     return (
         <li className="task">
             {/* ✅ UI: Текст задачи с условным стилем выполнения */}
@@ -31,17 +32,17 @@ const Task = ({ task, onToggle, onDelete }: TaskProps) => {
             <input
                 type="checkbox"
                 checked={task.completed}
-                onChange={() => onToggle(task)}  // 🎯 EVENT: Передаем задачу в колбэк
+                onChange={() => onToggle(task.id)}  // 🎯 EVENT: Передаем задачу в колбэк
             />
 
             {/* ✅ UI: Кнопка удаления задачи */}
             <button onClick={
-                () => onDelete(task)} // 🎯 EVENT: Передаем задачу в колбэк
+                () => onDelete(task.id)} // 🎯 EVENT: Передаем задачу в колбэк
             >
                 Delete
             </button>
         </li>
     )
-}
+})
 
 export default Task
