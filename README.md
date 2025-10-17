@@ -4,7 +4,7 @@ Modern Todo application built with React and TypeScript.
 
 ## 🚀 Live Demo
 
-[View Live Application](https://vercel.com/increationons-projects/react-todo)
+[View Live Application](https://react-todo-phi-wheat.vercel.app/)
 
 ## ✨ Features
 
