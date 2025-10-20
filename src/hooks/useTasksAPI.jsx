@@ -1,7 +1,7 @@
 import { useApi } from './useApi'
 import { useTaskDataManager } from './useTaskDataManager';
 
-export const useTasksAPI = (onAddTask, tasks) => {
+export const useTasksAPI = (tasks) => {
     // ✅ HOOKS: Композиция специализированных хуков
     const { isLoading, error, fetchWithState } = useApi(); // Сетевые запросы
     const { processTaskData } = useTaskDataManager() // Обработка данных
@@ -13,14 +13,16 @@ export const useTasksAPI = (onAddTask, tasks) => {
         // ✅ PROCESSING: Преобразование и фильтрация данных
         const tasksToAdd = processTaskData(data, tasks)
 
+        return tasksToAdd
+
         // ✅ INTEGRATION: Добавление обработанных задач в приложение
-        tasksToAdd.forEach(task => {
-            onAddTask(task); // Используем существующую функцию из TaskManager
-        });
+        // tasksToAdd.forEach(task => {
+        //     onAddTask(task); // Используем существующую функцию из TaskManager
+        // });
     }
 
     // ✅ INTERFACE: Возвращаем метод загрузки и состояния
-    return { loadTasksFromAPI, isLoading, error }
+    return { loadTasksFromAPI, isLoading, error}
 };
 
 // Flow данных:
