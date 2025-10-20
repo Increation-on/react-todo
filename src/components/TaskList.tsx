@@ -20,9 +20,18 @@ const TaskList = () => {
     useTaskStorage(state.tasks, dispatch)
 
     // ✅ HOOK: Загрузка задач из внешнего API
-    const { loadTasksFromAPI, isLoading } = useTasksAPI(
-        (taskData) => dispatch({ type: 'ADD_TASK', payload: taskData }),
-        state.tasks)
+    const { loadTasksFromAPI, isLoading } = useTasksAPI(state.tasks)
+
+    const handleLoadFromAPI = async () => {
+    try {
+        const tasksToAdd = await loadTasksFromAPI()
+        tasksToAdd.forEach(task => {
+            dispatch({ type: 'ADD_TASK', payload: task })
+        })
+    } catch (error) {
+        console.error('Failed to load tasks:', error)
+    }
+}
 
     const handleToggle = useCallback((id: number | string) => {
         dispatch({ type: 'TOGGLE_TASK', payload: id });
@@ -36,7 +45,7 @@ const TaskList = () => {
         <div className="task-list">
             <h2>Tasks List</h2>
             {/* 🎯 КОМПОНЕНТ: Кнопка загрузки из API с состоянием loading */}
-            <button onClick={loadTasksFromAPI} disabled={isLoading}>
+            <button onClick={handleLoadFromAPI} disabled={isLoading}>
                 {isLoading ? 'Loading...' : 'Load Tasks from API'}
             </button>
 
