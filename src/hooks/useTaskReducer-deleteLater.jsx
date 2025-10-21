@@ -1,16 +1,19 @@
 import { useReducer } from "react"
 
 export const useTaskReducer = () => {
+    
     // 🎯 НАЧАЛЬНОЕ СОСТОЯНИЕ: объект с tasks и filter
     const initialState = {
         tasks: [],        // массив задач (пока пустой)
         filter: 'all'     // фильтр: 'all', 'active', 'completed'
     }
+    
 
     // 🎯 REDUCER-ФУНКЦИЯ: чистая функция для обновления состояния
     // Принимает: state (текущее состояние), action (что сделать)
     // Возвращает: NEW STATE (новое состояние)
     const taskReducer = (state, action) => {
+       
         // 🎯 SWITCH: определяем КАК обновить состояние based on action.type
         switch (action.type) {
 
@@ -56,6 +59,7 @@ export const useTaskReducer = () => {
 
             // 🎯 CASE: ЗАГРУЗИТЬ ЗАДАЧИ (из localStorage)
             case 'LOAD_TASKS':
+                 
                 return {
                     ...state,
                     tasks: action.payload // заменяем ВЕСЬ массив задач
@@ -70,6 +74,7 @@ export const useTaskReducer = () => {
     // 🎯 USE-REDUCER: хук React для управления состоянием
     // Возвращает: state (текущее состояние) и dispatch (функция для отправки actions)
     const [state, dispatch] = useReducer(taskReducer, initialState)
+    
 
     // 🎯 ВОЗВРАЩАЕМ ИНТЕРФЕЙС: state и dispatch для использования в компонентах
     return { state, dispatch }

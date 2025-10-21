@@ -7,26 +7,32 @@
 import Task from "./Task.tsx"
 import AddTask from "./AddTask.tsx"
 import { useTasksAPI } from '../hooks/useTasksAPI.tsx'
-import { useTaskStorage } from '../hooks/useTaskStorage.jsx'
-import { useTaskReducer } from '../hooks/useTaskReducer.jsx'
+import { useTaskStorage } from '../hooks/useTaskStorage-deleteLater.jsx'
+// import { useTaskReducer } from '../hooks/useTaskReducer.jsx'
 import { useCallback } from "react"
+import { useTaskStore } from "../store/TaskStore.jsx"
 
 const TaskList = () => {
     // 🎯 ПАТТЕРН: State Management
-    const { state, dispatch } = useTaskReducer()
+    // const { state, dispatch } = useTaskReducer()
 
+// ✅ ZUSTAND: Получаем состояние и методы из store
+    const tasks = useTaskStore(state => state.tasks)
+    const addTask = useTaskStore(state => state.addTask)
+    const toggleTask = useTaskStore(state => state.toggleTask)
+    const deleteTask = useTaskStore(state => state.deleteTask)
 
     // ✅ HOOK: Синхронизация с localStorage (автосохранение/загрузка)
-    useTaskStorage(state.tasks, dispatch)
+    // useTaskStorage(state.tasks, dispatch)
 
     // ✅ HOOK: Загрузка задач из внешнего API
-    const { loadTasksFromAPI, isLoading } = useTasksAPI(state.tasks)
+    const { loadTasksFromAPI, isLoading } = useTasksAPI(tasks)
 
     const handleLoadFromAPI = async () => {
     try {
         const tasksToAdd = await loadTasksFromAPI()
         tasksToAdd.forEach(task => {
-            dispatch({ type: 'ADD_TASK', payload: task })
+            addTask(task)
         })
     } catch (error) {
         console.error('Failed to load tasks:', error)
@@ -34,12 +40,12 @@ const TaskList = () => {
 }
 
     const handleToggle = useCallback((id: number | string) => {
-        dispatch({ type: 'TOGGLE_TASK', payload: id });
-    }, [dispatch]);
+       toggleTask(id)
+    }, [toggleTask]);
 
     const handleDelete = useCallback((id: number | string) => {
-        dispatch({ type: 'DELETE_TASK', payload: id });
-    }, [dispatch]);
+        deleteTask(id)
+    }, [deleteTask]);
 
     return (
         <div className="task-list">
@@ -50,11 +56,11 @@ const TaskList = () => {
             </button>
 
             {/* ✅ КОМПОНЕНТ: Форма добавления новых задач */}
-            <AddTask onAddTask={(taskData) => dispatch({ type: 'ADD_TASK', payload: taskData })} />
+            <AddTask onAddTask={addTask} />
 
             {/* 🔄 ПАТТЕРН: Отрисовка списка задач */}
             <ul>
-                {state.tasks.map(task => (
+                {tasks.map(task => (
                     // ✅ КОМПОНЕНТ: Отдельная задача с callback функциями
                     <Task
                         key={task.id}          // ⚡ React key для оптимизации списков
