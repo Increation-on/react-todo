@@ -1,12 +1,24 @@
-import { useApi } from './useApi'
-import { useTaskDataManager } from './useTaskDataManager';
+import { useApi } from './useApi.tsx'
+import { useTaskDataManager } from './useTaskDataManager.jsx';
 
-export const useTasksAPI = (tasks) => {
+interface Task {
+  id: string | number
+  text: string
+  completed: boolean
+}
+
+interface TasksAPIReturn {
+  loadTasksFromAPI: () => Promise<Task[]>
+  isLoading: boolean
+  error: string | null
+}
+
+export const useTasksAPI = (tasks: Task[]): TasksAPIReturn => {
     // ✅ HOOKS: Композиция специализированных хуков
-    const { isLoading, error, fetchWithState } = useApi(); // Сетевые запросы
+    const { isLoading, error, fetchWithState } = useApi<Task[]>(); // Сетевые запросы
     const { processTaskData } = useTaskDataManager() // Обработка данных
 
-    const loadTasksFromAPI = async () => {
+    const loadTasksFromAPI = async (): Promise<Task[]> => {
         // ✅ NETWORK: Загрузка данных из внешнего API
         const data = await fetchWithState('https://jsonplaceholder.typicode.com/todos?_limit=3')
 
@@ -14,11 +26,6 @@ export const useTasksAPI = (tasks) => {
         const tasksToAdd = processTaskData(data, tasks)
 
         return tasksToAdd
-
-        // ✅ INTEGRATION: Добавление обработанных задач в приложение
-        // tasksToAdd.forEach(task => {
-        //     onAddTask(task); // Используем существующую функцию из TaskManager
-        // });
     }
 
     // ✅ INTERFACE: Возвращаем метод загрузки и состояния

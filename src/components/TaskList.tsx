@@ -6,7 +6,7 @@
 
 import Task from "./Task.tsx"
 import AddTask from "./AddTask.tsx"
-import { useTasksAPI } from '../hooks/useTasksAPI.jsx'
+import { useTasksAPI } from '../hooks/useTasksAPI.tsx'
 import { useTaskStorage } from '../hooks/useTaskStorage.jsx'
 import { useTaskReducer } from '../hooks/useTaskReducer.jsx'
 import { useCallback } from "react"
