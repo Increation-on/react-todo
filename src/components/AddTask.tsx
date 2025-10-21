@@ -3,13 +3,12 @@
  * Ответственность: управление формой добавления задач
  * Паттерн: Presentational Component (отвечает только за отображение)
  */
-import { useAddTaskForm } from "../hooks/useAddTaskForm"
+import { useAddTaskForm } from "../hooks/useAddTaskForm.tsx"
 import React from "react"
 
 interface AddTaskProps {
     onAddTask: (text: string) => void
 }
-
 
 const AddTask = React.memo(({ onAddTask }: AddTaskProps) => { // ✅ PROPS: Колбэк для добавления задачи в родительский компонент
 

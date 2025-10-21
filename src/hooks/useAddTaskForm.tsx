@@ -1,12 +1,20 @@
-import { useState } from "react"
+import React, { useState } from "react"
 
-export const useAddTaskForm = (onAddTask) => {
+interface AddTaskFormReturn {
+    inputValue: string,
+    isLoading: boolean,
+    error: string,
+    handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>,
+    setInputValue: React.Dispatch<React.SetStateAction<string>>
+}
+
+export const useAddTaskForm = (onAddTask: (taskText: string) => void): AddTaskFormReturn => {
     // ✅ STATE: Управление состоянием формы
-    const [inputValue, setInputValue] = useState('') // Текст в поле ввода
-    const [isLoading, setIsLoading] = useState(false) // Флаг загрузки (true/false)
-    const [error, setError] = useState('') // Текст ошибки (пустая строка = нет ошибки)
+    const [inputValue, setInputValue] = useState<string>('') // Текст в поле ввода
+    const [isLoading, setIsLoading] = useState<boolean>(false) // Флаг загрузки (true/false)
+    const [error, setError] = useState<string>('') // Текст ошибки (пустая строка = нет ошибки)
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         // ✅ EVENT: Предотвращаем стандартное поведение формы
         e.preventDefault()
 
@@ -19,10 +27,10 @@ export const useAddTaskForm = (onAddTask) => {
             if (inputValue.trim()) {
                 // ✅ UX: Имитация задержки сети для лучшего восприятия
                 await new Promise(resolve => setTimeout(resolve, 300))
-                
+
                 // ✅ BUSINESS: Вызываем колбэк родителя для добавления задачи
                 onAddTask(inputValue)
-                
+
                 // ✅ UX: Очищаем поле после успешного добавления
                 setInputValue('')
             }
