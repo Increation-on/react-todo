@@ -7,11 +7,13 @@ import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-do
 import './App.css';
 import TaskList from './components/TaskList.tsx';
 import ActiveTasks from './components/pages/ActiveTasks.tsx';
-import CompletedTasks from './components/pages/CompletedTasks';
+import CompletedTasks from './components/pages/CompletedTasks.tsx';
 import Stats from './components/pages/Stats';
+import { useTaskStats } from './hooks/useTaskStats.tsx';
+
 
 const App = () => {
-
+  const {total, active, completed} = useTaskStats()
   return (
    
       <Router>
@@ -21,17 +23,15 @@ const App = () => {
           {/* Собираем приложение из компонентов как Lego */}
 
           <nav>
-            <NavLink className={({ isActive }) => isActive ? 'active-link' : ''} to="/">All tasks</NavLink>
-            <NavLink className={({ isActive }) => isActive ? 'active-link' : ''} to="/active">Active</NavLink>
-            <NavLink className={({ isActive }) => isActive ? 'active-link' : ''} to="/completed">Completed</NavLink>
-            <NavLink className={({ isActive }) => isActive ? 'active-link' : ''} to="/stats">Stats</NavLink>
+            <NavLink className={({ isActive }) => isActive ? 'active-link' : ''} to="/">All tasks({total})</NavLink>
+            <NavLink className={({ isActive }) => isActive ? 'active-link' : ''} to="/active">Active({active})</NavLink>
+            <NavLink className={({ isActive }) => isActive ? 'active-link' : ''} to="/completed">Completed({completed})</NavLink>
           </nav>
 
           <Routes>
             <Route path="/" element={<TaskList />} />
             <Route path="/active" element={<ActiveTasks />} />
             <Route path="/completed" element={<CompletedTasks />} />
-            <Route path="/stats" element={<Stats />} />
           </Routes>
 
         </div>
