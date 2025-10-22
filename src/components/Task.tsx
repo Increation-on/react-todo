@@ -14,8 +14,7 @@ interface Task {
 interface TaskProps {
     task: Task;
     onToggle: (id: number | string) => void;  // Теперь принимает ID!
-    onDelete: (id: number | string) => void;  // Теперь принимает ID!
-    taskId: number | string;                  // Добавляем ID
+    onDelete: (id: number | string) => void;  // Теперь принимает ID!             
 }
 
 const Task = React.memo(({ task, onToggle, onDelete }: TaskProps) => {

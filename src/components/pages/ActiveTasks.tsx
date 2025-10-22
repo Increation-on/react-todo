@@ -1,4 +1,4 @@
-import { useTaskStore } from "../../store/TaskStore"
+import { useTaskStore } from "../../store/TaskStore.tsx"
 import { useMemo, useCallback } from "react"
 import Task from "../Task.tsx"
 
@@ -30,8 +30,7 @@ const ActiveTasks = () => {
                         key={task.id}          // ⚡ React key для оптимизации списков
                         task={task}            // 📦 Данные задачи (объект)
                         onToggle={handleToggle}      // ✅ Передаём функцию, а не создаём новую
-                        onDelete={handleDelete}      // ✅ Передаём функцию, а не создаём новую
-                        taskId={task.id}      // 🗑️ Функция удаления
+                        onDelete={handleDelete}      // ✅ Передаём функцию, а не создаём новую 
                     />
                 ))}
             </ul>

@@ -10,7 +10,7 @@ import { useTasksAPI } from '../hooks/useTasksAPI.tsx'
 import { useTaskStorage } from '../hooks/useTaskStorage-deleteLater.jsx'
 // import { useTaskReducer } from '../hooks/useTaskReducer.jsx'
 import { useCallback } from "react"
-import { useTaskStore } from "../store/TaskStore.jsx"
+import { useTaskStore } from "../store/TaskStore.tsx"
 
 const TaskList = () => {
     // 🎯 ПАТТЕРН: State Management
@@ -32,7 +32,7 @@ const TaskList = () => {
     try {
         const tasksToAdd = await loadTasksFromAPI()
         tasksToAdd.forEach(task => {
-            addTask(task)
+            addTask(task.text)
         })
     } catch (error) {
         console.error('Failed to load tasks:', error)
@@ -67,7 +67,7 @@ const TaskList = () => {
                         task={task}            // 📦 Данные задачи (объект)
                         onToggle={handleToggle}      // ✅ Передаём функцию, а не создаём новую
                         onDelete={handleDelete}      // ✅ Передаём функцию, а не создаём новую
-                        taskId={task.id}      // 🗑️ Функция удаления
+                      
                     />
                 ))}
             </ul>
