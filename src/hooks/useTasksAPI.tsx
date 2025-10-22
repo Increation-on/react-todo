@@ -1,5 +1,5 @@
 import { useApi } from './useApi.tsx'
-import { useTaskDataManager } from './useTaskDataManager.jsx';
+import { useTaskDataManager } from './useTaskDataManager.tsx';
 
 interface Task {
   id: string | number
@@ -13,9 +13,16 @@ interface TasksAPIReturn {
   error: string | null
 }
 
+interface ApiTodo {
+  userId: number
+  id: number
+  title: string        
+  completed: boolean
+}
+
 export const useTasksAPI = (tasks: Task[]): TasksAPIReturn => {
     // ✅ HOOKS: Композиция специализированных хуков
-    const { isLoading, error, fetchWithState } = useApi<Task[]>(); // Сетевые запросы
+    const { isLoading, error, fetchWithState } = useApi<ApiTodo[]>(); // Сетевые запросы
     const { processTaskData } = useTaskDataManager() // Обработка данных
 
     const loadTasksFromAPI = async (): Promise<Task[]> => {
