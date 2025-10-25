@@ -16,7 +16,7 @@ const TaskList = () => {
     // 🎯 ПАТТЕРН: State Management
     // const { state, dispatch } = useTaskReducer()
 
-// ✅ ZUSTAND: Получаем состояние и методы из store
+    // ✅ ZUSTAND: Получаем состояние и методы из store
     const tasks = useTaskStore(state => state.tasks)
     const addTask = useTaskStore(state => state.addTask)
     const toggleTask = useTaskStore(state => state.toggleTask)
@@ -29,22 +29,24 @@ const TaskList = () => {
     const { loadTasksFromAPI, isLoading } = useTasksAPI(tasks)
 
     const handleLoadFromAPI = async () => {
-    try {
-        const tasksToAdd = await loadTasksFromAPI()
-        tasksToAdd.forEach(task => {
-            addTask(task.text)
-        })
-    } catch (error) {
-        console.error('Failed to load tasks:', error)
+        try {
+            const tasksToAdd = await loadTasksFromAPI()
+            tasksToAdd.forEach(task => {
+                addTask(task.text)
+            })
+        } catch (error) {
+            console.error('Failed to load tasks:', error)
+        }
     }
-}
 
     const handleToggle = useCallback((id: number | string) => {
-       toggleTask(id)
+        toggleTask(id)
     }, [toggleTask]);
 
     const handleDelete = useCallback((id: number | string) => {
-        deleteTask(id)
+        if (window.confirm('Вы уверены что хотите удалить задачу?')) {
+            deleteTask(id);
+        }
     }, [deleteTask]);
 
     return (
@@ -67,7 +69,7 @@ const TaskList = () => {
                         task={task}            // 📦 Данные задачи (объект)
                         onToggle={handleToggle}      // ✅ Передаём функцию, а не создаём новую
                         onDelete={handleDelete}      // ✅ Передаём функцию, а не создаём новую
-                      
+
                     />
                 ))}
             </ul>

@@ -8,7 +8,6 @@ import './App.css';
 import TaskList from './components/TaskList.tsx';
 import ActiveTasks from './components/pages/ActiveTasks.tsx';
 import CompletedTasks from './components/pages/CompletedTasks.tsx';
-import Stats from './components/pages/Stats';
 import { useTaskStats } from './hooks/useTaskStats.tsx';
 
 
