@@ -1,41 +1,44 @@
 import { useTaskStore } from "../../store/TaskStore.tsx"
+import { useAuthStore } from "../../store/AuthStore.tsx" // 🔥 Уже есть
 import { useMemo, useCallback } from "react"
 import Task from "../Task.tsx"
 
-
 const CompletedTasks = () => {
-    // ✅ Получаем задачи из store
-    const tasks = useTaskStore(state => state.tasks)
+    // ✅ Получаем userId
+    const userId = useAuthStore(state => state.getUserId())
+    
+    // ✅ Получаем задачи
+    const allTasks = useTaskStore(state => state.tasks)
     const toggleTask = useTaskStore(state => state.toggleTask)
     const deleteTask = useTaskStore(state => state.deleteTask)
 
-    // ✅ Фильтруем активные задачи
+    // ✅ Фильтруем СНАЧАЛА по userId, ПОТОМ по completed
     const completedTasks = useMemo(() => {
-        return tasks.filter(task => task.completed)
-    }, [tasks])
+        const userTasks = allTasks.filter(task => task.userId === userId)
+        return userTasks.filter(task => task.completed)
+    }, [allTasks, userId]) // 🔥 Добавляем userId
 
     const handleToggle = useCallback((id: number | string) => {
         toggleTask(id)
-    }, [toggleTask]);
+    }, [toggleTask])
 
     const handleDelete = useCallback((id: number | string) => {
         deleteTask(id)
-    }, [deleteTask]);
+    }, [deleteTask])
 
     return (
         <div className="task-list">
             <ul>
-                {tasks && completedTasks.map(task => (
+                {completedTasks.map(task => ( // 🔥 Меняем tasks на completedTasks
                     <Task
-                        key={task.id}          // ⚡ React key для оптимизации списков
-                        task={task}            // 📦 Данные задачи (объект)
-                        onToggle={handleToggle}      // ✅ Передаём функцию, а не создаём новую
-                        onDelete={handleDelete}      // ✅ Передаём функцию, а не создаём новую 
+                        key={task.id}
+                        task={task}
+                        onToggle={handleToggle}
+                        onDelete={handleDelete}
                     />
                 ))}
             </ul>
         </div>
-
     )
 }
 

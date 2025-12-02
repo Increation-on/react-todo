@@ -7,17 +7,18 @@
 import Task from "./Task.tsx"
 import AddTask from "./AddTask.tsx"
 import { useTasksAPI } from '../hooks/useTasksAPI.tsx'
-import { useTaskStorage } from '../hooks/useTaskStorage-deleteLater.jsx'
-// import { useTaskReducer } from '../hooks/useTaskReducer.jsx'
 import { useCallback } from "react"
 import { useTaskStore } from "../store/TaskStore.tsx"
+import { useAuthStore } from "../store/AuthStore.tsx"
 
 const TaskList = () => {
     // 🎯 ПАТТЕРН: State Management
     // const { state, dispatch } = useTaskReducer()
 
     // ✅ ZUSTAND: Получаем состояние и методы из store
-    const tasks = useTaskStore(state => state.tasks)
+    const userId = useAuthStore(state => state.getUserId())
+    const getUserTasks = useTaskStore(state => state.getUserTasks)
+    const tasks = getUserTasks(userId)
     const addTask = useTaskStore(state => state.addTask)
     const toggleTask = useTaskStore(state => state.toggleTask)
     const deleteTask = useTaskStore(state => state.deleteTask)

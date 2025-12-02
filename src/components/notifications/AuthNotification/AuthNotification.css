@@ -1,0 +1,57 @@
+/* /src/components/AuthNotification/AuthNotification.css */
+.auth-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 500;
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+  max-width: 300px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.auth-notification--success {
+  background-color: #4CAF50;
+  border-left: 4px solid #2E7D32;
+}
+
+.auth-notification--error {
+  background-color: #f44336;
+  border-left: 4px solid #c62828;
+}
+
+.auth-notification--warning {
+  background-color: #ff9800;
+  border-left: 4px solid #ef6c00;
+}
+
+.auth-notification__close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: 10px;
+  opacity: 0.8;
+}
+
+.auth-notification__close:hover {
+  opacity: 1;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

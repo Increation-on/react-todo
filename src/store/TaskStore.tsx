@@ -1,57 +1,138 @@
+// /src/store/taskStore.ts - ОБНОВЛЯЕМ ДЛЯ ИЗОЛЯЦИИ
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-
+import { useAuthStore } from './AuthStore.tsx'
 
 interface Task {
-  id: number | string;
-  text: string;
-  completed: boolean;
+    id: number | string;
+    text: string;
+    completed: boolean;
+    userId: string; // 🔥 ДОБАВЛЯЕМ ПОЛЕ ДЛЯ ИЗОЛЯЦИИ
+    createdAt: string; // Для сортировки
 }
 
 interface TaskStore {
-  tasks: Task[];
-  addTask: (text: string ) => void;
-  toggleTask: (id: number | string) => void;
-  deleteTask: (id: number | string) => void;
-  getTotalTasks: () => number;
+    tasks: Task[];
+    // 🔥 ДОБАВЛЯЕМ МЕТОД ДЛЯ ПОЛУЧЕНИЯ ЗАДАЧ ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ
+    getUserTasks: (userId: string | null) => Task[];
+    addTask: (text: string) => void;
+    toggleTask: (id: number | string) => void;
+    deleteTask: (id: number | string) => void;
+    getTotalTasks: () => number;
+    getActiveTasks: () => Task[];
+    getCompletedTasks: () => Task[];
+    // 🔥 ОЧИСТКА ПРИ СМЕНЕ ПОЛЬЗОВАТЕЛЯ (будет вызываться из authStore)
+    clearTasksForCurrentUser: () => void;
 }
 
-// 🎯 СОЗДАЁМ ГЛОБАЛЬНЫЙ STORE ДЛЯ УПРАВЛЕНИЯ ЗАДАЧАМИ
-export const useTaskStore = create<TaskStore>()(persist(
-    // 🎯 ФУНКЦИЯ STORE: принимает set (изменение состояния) и get (чтение состояния)
-    (set, get) => ({
-        // ✅ СОСТОЯНИЕ: массив задач (начальное значение - пустой массив)
-        tasks: [],
+export const useTaskStore = create<TaskStore>()(
+    persist(
+        (set, get) => ({
+            tasks: [],
 
-        // ✅ ДЕЙСТВИЕ: добавление новой задачи
-        addTask: (text) => set(state => ({
-            tasks: [...state.tasks, {
-                id: Date.now() + Math.random(),  // 🆔 Генерируем уникальный ID (crypto может не работать)
-                text: text,         // 📝 Текст задачи (поддержка разных форматов)
-                completed: false                 // ⚪ Статус "не выполнено" по умолчанию
-            }]
-        })),
+            // 🔥 ПОЛУЧЕНИЕ ЗАДАЧ ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ
+            getUserTasks: (userId: string | null) => {
+                if (!userId) return [];
+                return get().tasks.filter(task => task.userId === userId);
+            },
 
-        // ✅ ДЕЙСТВИЕ: переключение статуса выполнения задачи
-        toggleTask: (id) => set(state => ({
-            tasks: state.tasks.map(task =>
-                task.id === id 
-                    ? { ...task, completed: !task.completed }  // 🔄 Инвертируем статус
-                    : task                                      // ⏩ Остальные задачи без изменений
-            )
-        })),
+            // 🔥 ДОБАВЛЕНИЕ ЗАДАЧИ С USERID
+            addTask: (text) => {
+                const userId = useAuthStore.getState().getUserId();
+                if (!userId) {
+                    console.error('Нельзя добавить задачу: пользователь не авторизован');
+                    return;
+                }
 
-        // ✅ ДЕЙСТВИЕ: удаление задачи по ID
-        deleteTask: (id) => set(state => ({
-            tasks: state.tasks.filter(task => task.id !== id)  // 🗑️ Фильтруем массив, оставляя все кроме удаляемой
-        })),
-        
-        // ✅ ГЕТТЕР: получение общего количества задач (НЕ изменяет состояние!)
-        getTotalTasks: () => get().tasks.length,  // 📊 get() даёт доступ к текущему состоянию
-    }),
+                set(state => ({
+                    tasks: [...state.tasks, {
+                        id: Date.now() + Math.random(),
+                        text: text,
+                        completed: false,
+                        userId: userId, // 🔥 СОХРАНЯЕМ КТО СОЗДАЛ
+                        createdAt: new Date().toISOString()
+                    }]
+                }));
+            },
 
-    // 🎯 PERSIST CONFIG: настройки авто-сохранения в localStorage
-    {
-        name: 'tasks-storage'  // 💾 Ключ для хранения в localStorage
-    }
-)) 
+            // 🔥 ПЕРЕКЛЮЧЕНИЕ СТАТУСА (ТОЛЬКО СВОИХ ЗАДАЧ)
+            toggleTask: (id) => {
+                const userId = useAuthStore.getState().getUserId();
+                set(state => ({
+                    tasks: state.tasks.map(task =>
+                        task.id === id && task.userId === userId // 🔥 ПРОВЕРЯЕМ ВЛАДЕЛЬЦА
+                            ? { ...task, completed: !task.completed }
+                            : task
+                    )
+                }));
+            },
+
+            // 🔥 УДАЛЕНИЕ (ТОЛЬКО СВОИХ ЗАДАЧ)
+            deleteTask: (id) => {
+                const userId = useAuthStore.getState().getUserId();
+                set(state => ({
+                    tasks: state.tasks.filter(task =>
+                        !(task.id === id && task.userId === userId) // 🔥 УДАЛЯЕМ ТОЛЬКО СВОИ
+                    )
+                }));
+            },
+
+            // 🔥 ГЕТТЕРЫ С ФИЛЬТРАЦИЕЙ ПО ПОЛЬЗОВАТЕЛЮ
+            getTotalTasks: () => {
+                const userId = useAuthStore.getState().getUserId();
+                if (!userId) return 0;
+                return get().tasks.filter(task => task.userId === userId).length;
+            },
+
+            getActiveTasks: () => {
+                const userId = useAuthStore.getState().getUserId();
+                if (!userId) return [];
+                return get().tasks.filter(task =>
+                    task.userId === userId && !task.completed
+                );
+            },
+
+            getCompletedTasks: () => {
+                const userId = useAuthStore.getState().getUserId();
+                if (!userId) return [];
+                return get().tasks.filter(task =>
+                    task.userId === userId && task.completed
+                );
+            },
+
+            // 🔥 ОЧИСТКА ЗАДАЧ В ПАМЯТИ (НЕ В LOCALSTORAGE)
+            clearTasksForCurrentUser: () => {
+                // Не очищаем полностью, просто фильтруем при чтении
+                // Задачи других пользователей остаются в localStorage
+                console.log('🔄 Кэш задач очищен для смены пользователя');
+            }
+        }),
+
+        // 🎯 PERSIST CONFIG: ВСЕ ЗАДАЧИ ВСЕХ ПОЛЬЗОВАТЕЛЕЙ В ОДНОМ ХРАНИЛИЩЕ
+        // Но фильтруем по userId при чтении
+        {
+            name: 'tasks-storage',
+            // 🔥 МОЖНО ДОБАВИТЬ МИГРАЦИЮ ДЛЯ СТАРЫХ ДАННЫХ
+            migrate: (persistedState: any, version: number) => {
+                // Если в старых данных нет userId - добавляем дефолтный
+                if (persistedState?.tasks && persistedState.tasks.length > 0) {
+                    const hasUserId = persistedState.tasks[0].userId !== undefined;
+                    if (!hasUserId) {
+                        console.log('🔧 Миграция: добавляем userId к старым задачам');
+                        persistedState.tasks = persistedState.tasks.map((task: any) => ({
+                            ...task,
+                            userId: 'legacy_user' // Старые задачи всем одному пользователю
+                        }));
+                    }
+                }
+                return persistedState;
+            }
+        }
+    )
+);
+
+// 🔥 ХЕЛПЕР ДЛЯ ИНИЦИАЛИЗАЦИИ ПРИ ЗАГРУЗКЕ
+export const initializeTaskStore = () => {
+    // Можно вызвать при загрузке приложения
+    console.log('📦 TaskStore инициализирован');
+};
