@@ -165,3 +165,57 @@ nav a:hover {
   color: #00ff00 !important;
   text-shadow: 0 0 10px #00ff00;
 }
+
+/* Добавить в App.css */
+.login-page {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.login-page input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.login-page button {
+  width: 100%;
+  padding: 12px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.login-page button:hover {
+  background: #45a049;
+}
+
+.error-field {
+  border-color: #d32f2f !important;
+  background-color: #ffebee;
+}
+
+.login-page input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.login-page input:focus {
+  border-color: #4CAF50;
+  outline: none;
+}

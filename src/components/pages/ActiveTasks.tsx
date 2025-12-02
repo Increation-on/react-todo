@@ -1,41 +1,44 @@
 import { useTaskStore } from "../../store/TaskStore.tsx"
+import { useAuthStore } from "../../store/AuthStore.tsx"
 import { useMemo, useCallback } from "react"
 import Task from "../Task.tsx"
 
-
 const ActiveTasks = () => {
+    // ✅ Получаем userId
+    const userId = useAuthStore(state => state.getUserId())
+    
     // ✅ Получаем задачи из store
-    const tasks = useTaskStore(state => state.tasks)
+    const allTasks = useTaskStore(state => state.tasks)
     const toggleTask = useTaskStore(state => state.toggleTask)
     const deleteTask = useTaskStore(state => state.deleteTask)
 
-    // ✅ Фильтруем активные задачи
+    // ✅ Фильтруем СНАЧАЛА по userId, ПОТОМ по активным
     const activeTasks = useMemo(() => {
-        return tasks.filter(task => !task.completed)
-    }, [tasks])
+        const userTasks = allTasks.filter(task => task.userId === userId)
+        return userTasks.filter(task => !task.completed)
+    }, [allTasks, userId]) // 🔥 ДОБАВИЛИ userId в зависимости
 
     const handleToggle = useCallback((id: number | string) => {
         toggleTask(id)
-    }, [toggleTask]);
+    }, [toggleTask])
 
     const handleDelete = useCallback((id: number | string) => {
         deleteTask(id)
-    }, [deleteTask]);
+    }, [deleteTask])
 
     return (
         <div className="task-list">
             <ul>
-                {tasks && activeTasks.map(task => (
+                {activeTasks.map(task => ( // 🔥 МЕНЯЕМ tasks на activeTasks
                     <Task
-                        key={task.id}          // ⚡ React key для оптимизации списков
-                        task={task}            // 📦 Данные задачи (объект)
-                        onToggle={handleToggle}      // ✅ Передаём функцию, а не создаём новую
-                        onDelete={handleDelete}      // ✅ Передаём функцию, а не создаём новую 
+                        key={task.id}
+                        task={task}
+                        onToggle={handleToggle}
+                        onDelete={handleDelete}
                     />
                 ))}
             </ul>
         </div>
-
     )
 }
 
