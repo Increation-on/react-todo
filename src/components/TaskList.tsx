@@ -3,19 +3,15 @@
  * Ответственность: хранение состояния, управление списком задач
  * Паттерн: Container Component / State Manager
  */
-
 import Task from "./Task.tsx"
 import AddTask from "./AddTask.tsx"
 import { useTasksAPI } from '../hooks/useTasksAPI.tsx'
 import { useCallback } from "react"
 import { useTaskStore } from "../store/TaskStore.tsx"
 import { useAuthStore } from "../store/AuthStore.tsx"
+import './styles/TaskList.css'
 
 const TaskList = () => {
-    // 🎯 ПАТТЕРН: State Management
-    // const { state, dispatch } = useTaskReducer()
-
-    // ✅ ZUSTAND: Получаем состояние и методы из store
     const userId = useAuthStore(state => state.getUserId())
     const getUserTasks = useTaskStore(state => state.getUserTasks)
     const tasks = getUserTasks(userId)
@@ -23,10 +19,6 @@ const TaskList = () => {
     const toggleTask = useTaskStore(state => state.toggleTask)
     const deleteTask = useTaskStore(state => state.deleteTask)
 
-    // ✅ HOOK: Синхронизация с localStorage (автосохранение/загрузка)
-    // useTaskStorage(state.tasks, dispatch)
-
-    // ✅ HOOK: Загрузка задач из внешнего API
     const { loadTasksFromAPI, isLoading } = useTasksAPI(tasks)
 
     const handleLoadFromAPI = async () => {
@@ -51,10 +43,16 @@ const TaskList = () => {
     }, [deleteTask]);
 
     return (
-        <div className="task-list">
-            <h2>Tasks List</h2>
-            {/* 🎯 КОМПОНЕНТ: Кнопка загрузки из API с состоянием loading */}
-            <button onClick={handleLoadFromAPI} disabled={isLoading}>
+        <div className="task-list-container">
+            <h2 className="task-list-title">Tasks List</h2>
+            
+            {/* 🎯 КОМПОНЕНТ: Кнопка загрузки из API */}
+            <button 
+                onClick={handleLoadFromAPI} 
+                disabled={isLoading}
+                className="list-control-button"
+                style={{ marginBottom: '1rem' }}
+            >
                 {isLoading ? 'Loading...' : 'Load Tasks from API'}
             </button>
 
@@ -62,18 +60,23 @@ const TaskList = () => {
             <AddTask onAddTask={addTask} />
 
             {/* 🔄 ПАТТЕРН: Отрисовка списка задач */}
-            <ul>
-                {tasks.map(task => (
-                    // ✅ КОМПОНЕНТ: Отдельная задача с callback функциями
-                    <Task
-                        key={task.id}          // ⚡ React key для оптимизации списков
-                        task={task}            // 📦 Данные задачи (объект)
-                        onToggle={handleToggle}      // ✅ Передаём функцию, а не создаём новую
-                        onDelete={handleDelete}      // ✅ Передаём функцию, а не создаём новую
-
-                    />
-                ))}
-            </ul>
+            {tasks.length === 0 ? (
+                <div className="empty-list">
+                    <div className="empty-list-icon">📋</div>
+                    <p>No tasks yet. Add your first task!</p>
+                </div>
+            ) : (
+                <ul className="task-list">
+                    {tasks.map(task => (
+                        <Task
+                            key={task.id}
+                            task={task}
+                            onToggle={handleToggle}
+                            onDelete={handleDelete}
+                        />
+                    ))}
+                </ul>
+            )}
         </div>
     )
 }

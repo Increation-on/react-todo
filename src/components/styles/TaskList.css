@@ -1,0 +1,133 @@
+/* src/styles/TaskList.css */
+
+/* Контейнер списка задач */
+.task-list-container {
+  margin-top: 2rem;
+}
+
+/* Заголовок списка */
+.task-list-title {
+  color: var(--neon-blue);
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+/* Фильтры задач */
+.task-filters {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border-top: 1px dashed var(--neon-green);
+  border-bottom: 1px dashed var(--neon-green);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.filter-button {
+  background-color: transparent;
+  border: 1px solid var(--neon-pink);
+  color: var(--neon-pink);
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 2px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.filter-button:hover,
+.filter-button.active {
+  background-color: var(--neon-pink);
+  color: #000000;
+  box-shadow: 0 0 10px var(--neon-pink);
+}
+
+/* Статистика задач */
+.task-stats {
+  color: var(--neon-blue);
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px dashed var(--neon-blue);
+  border-radius: 4px;
+  background-color: rgba(0, 255, 255, 0.05);
+  display: flex;
+  justify-content: space-around;
+  font-size: 0.9rem;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--text-color);
+  margin-top: 0.3rem;
+}
+
+/* Состояние пустого списка */
+.empty-list {
+  color: var(--neon-blue);
+  padding: 3rem 1rem;
+  text-align: center;
+  opacity: 0.7;
+  font-style: italic;
+  border: 1px dashed var(--neon-blue);
+  border-radius: 4px;
+  margin: 2rem 0;
+}
+
+.empty-list-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+/* Список задач */
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+/* Кнопки управления списком */
+.list-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--neon-green);
+}
+
+.list-control-button {
+  background-color: transparent;
+  border: 1px solid var(--neon-green);
+  color: var(--neon-green);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 2px;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.list-control-button:hover {
+  background-color: var(--neon-green);
+  color: #000000;
+  box-shadow: 0 0 10px var(--neon-green);
+}
+
+.list-control-button--clear {
+  border-color: #ff0000;
+  color: #ff0000;
+}
+
+.list-control-button--clear:hover {
+  background-color: #ff0000;
+  color: var(--text-color);
+  box-shadow: 0 0 10px #ff0000;
+}
+

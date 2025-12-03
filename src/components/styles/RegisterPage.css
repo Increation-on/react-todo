@@ -1,0 +1,236 @@
+/* 📝 REGISTER PAGE - NEON GLITCH THEME (Адаптировано) */
+
+.register-page {
+  max-width: 480px;
+  margin: 3rem auto;
+  padding: 2.5rem;
+  background-color: #000000;
+  border: 2px solid var(--neon-pink);
+  box-shadow: 
+    0 0 25px var(--neon-pink),
+    inset 0 0 20px rgba(255, 0, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Эффект пульсации */
+.register-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 1px solid var(--neon-blue);
+  animation: pulse-border 3s infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse-border {
+  0%, 100% { 
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+/* Заголовок */
+.register-page h2 {
+  color: var(--neon-pink);
+  text-shadow: 
+    0 0 15px var(--neon-pink),
+    0 0 30px rgba(255, 0, 255, 0.5);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.2rem;
+  letter-spacing: 3px;
+  position: relative;
+}
+
+.register-page h2::after {
+  content: 'NEW USER';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  color: var(--neon-green);
+  opacity: 0.7;
+  letter-spacing: 4px;
+}
+
+/* Форма */
+.register-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+/* Контейнеры полей */
+.register-page form > div {
+  position: relative;
+}
+
+/* Поля ввода */
+.register-page input[type="email"],
+.register-page input[type="password"] {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--neon-pink);
+  color: var(--text-color);
+  padding: 1rem 1.2rem;
+  font-size: 1.1rem;
+  font-family: 'Courier New', Courier, monospace;
+  transition: all 0.3s;
+  box-shadow: 
+    0 0 8px rgba(255, 0, 255, 0.3),
+    inset 0 0 5px rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+}
+
+.register-page input:focus {
+  outline: none;
+  border-color: var(--neon-green);
+  box-shadow: 
+    0 0 15px var(--neon-green),
+    inset 0 0 10px rgba(0, 255, 0, 0.2);
+  color: var(--neon-green);
+}
+
+.register-page input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+/* Поле с ошибкой */
+.register-page input.error-field {
+  border-color: #ff0000 !important;
+  box-shadow: 
+    0 0 10px #ff0000,
+    inset 0 0 5px rgba(255, 0, 0, 0.2);
+  animation: error-pulse 0.5s;
+}
+
+/* Ошибки валидации */
+.register-page form > div > div[style*="color: #d32f2f"] {
+  color: #ff0000 !important;
+  text-shadow: 0 0 8px #ff0000;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  border-radius: 2px;
+  animation: error-glitch 0.5s infinite;
+}
+
+/* Ошибка сервера (submitError) */
+.register-page > div[style*="color: red"] {
+  color: #ff0000 !important;
+  text-shadow: 0 0 10px #ff0000;
+  background-color: rgba(255, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 0, 0, 0.4) !important;
+  padding: 1rem !important;
+  border-radius: 2px;
+  margin-bottom: 1.5rem !important;
+  animation: server-error-glitch 1s infinite;
+}
+
+/* Кнопка регистрации */
+.register-page button[type="submit"] {
+  background-color: transparent;
+  border: 2px solid var(--neon-pink);
+  color: var(--neon-pink);
+  padding: 1.2rem;
+  font-size: 1.2rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  margin-top: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+  border-radius: 2px;
+  width: 100%;
+}
+
+.register-page button[type="submit"]:hover:not(:disabled) {
+  background-color: var(--neon-pink);
+  color: #000000;
+  box-shadow: 
+    0 0 30px var(--neon-pink),
+    0 0 50px rgba(255, 0, 255, 0.6);
+  transform: translateY(-3px) scale(1.02);
+}
+
+.register-page button[type="submit"]:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: rgba(255, 0, 255, 0.2);
+  color: rgba(255, 0, 255, 0.2);
+  box-shadow: none;
+}
+
+/* Эффект взрыва частиц */
+.register-page button[type="submit"]::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, var(--neon-pink), transparent);
+  transition: all 0.3s;
+  transform: translate(-50%, -50%);
+}
+
+.register-page button[type="submit"]:hover::after {
+  width: 200%;
+  height: 200%;
+  opacity: 0;
+}
+
+/* Ссылка на логин */
+.register-page p {
+  text-align: center;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px dashed var(--neon-green);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+}
+
+.register-page a {
+  color: var(--neon-blue);
+  text-decoration: none;
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid transparent;
+  transition: all 0.3s;
+}
+
+.register-page a:hover {
+  color: #000000;
+  background-color: var(--neon-blue);
+  border-color: var(--neon-blue);
+  text-shadow: none;
+  box-shadow: 0 0 10px var(--neon-blue);
+}
+
+/* Мобильная адаптивность */
+@media (max-width: 520px) {
+  .register-page {
+    margin: 2rem 1rem;
+    padding: 1.5rem;
+  }
+  
+  .register-page h2 {
+    font-size: 1.8rem;
+  }
+}
