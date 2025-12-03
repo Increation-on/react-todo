@@ -4,6 +4,7 @@ import { useAuthStore } from '../../store/AuthStore.tsx';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useValidation } from '../../hooks/useValidation.tsx';
 import { useNotificationStore } from '../../store/NotificationStore.tsx';
+import './../styles/LoginPage.css'
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');

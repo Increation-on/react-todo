@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useAuthStore } from '../../store/AuthStore.tsx';
 import { useNavigate, Link } from 'react-router-dom';
 import { useValidation } from '../../hooks/useValidation.tsx';
+import './../styles/RegisterPage.css'
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('');

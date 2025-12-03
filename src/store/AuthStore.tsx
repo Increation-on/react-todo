@@ -95,7 +95,7 @@ export const useAuthStore = create<AuthStore>((set, get) => {
       }
       
       // Создаём JWT на 120 минут (для теста можно поставить 10000 = 10 секунд)
-      const expires = Date.now() + 720000;
+      const expires = Date.now() + 7200000;
       const token = createMockJWT({
         userId: user.id,
         email: user.email,

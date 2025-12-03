@@ -1,0 +1,295 @@
+/* 🔓 LOGIN PAGE - NEON GLITCH THEME (Адаптировано) */
+
+.login-page {
+  max-width: 420px;
+  margin: 4rem auto;
+  padding: 2.5rem;
+  background-color: #000000;
+  border: 2px solid var(--neon-green);
+  box-shadow: 
+    0 0 25px var(--neon-green),
+    inset 0 0 20px rgba(0, 255, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Эффект сканирования матрицы */
+.login-page::before {
+  content: '';
+  position: absolute;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    var(--neon-green),
+    var(--neon-blue),
+    var(--neon-green),
+    transparent);
+  animation: matrix-scan 4s linear infinite;
+  filter: blur(1px);
+}
+
+@keyframes matrix-scan {
+  0% { top: -100%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Заголовок */
+.login-page h2 {
+  color: var(--neon-green);
+  text-shadow: 
+    0 0 10px var(--neon-green),
+    0 0 20px var(--neon-green);
+  text-align: center;
+  margin-bottom: 2.5rem;
+  font-size: 2.2rem;
+  letter-spacing: 2px;
+  position: relative;
+  animation: text-flicker 3s infinite alternate;
+}
+
+@keyframes text-flicker {
+  0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+    text-shadow: 
+      0 0 10px var(--neon-green),
+      0 0 20px var(--neon-green);
+    opacity: 1;
+  }
+  20%, 24%, 55% {
+    text-shadow: none;
+    opacity: 0.8;
+  }
+}
+
+/* Форма */
+.login-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+/* Контейнер для поля ввода */
+.login-page form > div {
+  position: relative;
+}
+
+/* Поля ввода */
+.login-page input[type="email"],
+.login-page input[type="password"] {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--neon-blue);
+  color: var(--text-color);
+  padding: 1rem 1.2rem;
+  font-size: 1.1rem;
+  font-family: 'Courier New', Courier, monospace;
+  transition: all 0.3s;
+  box-shadow: 
+    0 0 8px rgba(0, 255, 255, 0.3),
+    inset 0 0 5px rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+}
+
+.login-page input:focus {
+  outline: none;
+  border-color: var(--neon-green);
+  box-shadow: 
+    0 0 15px var(--neon-green),
+    inset 0 0 10px rgba(0, 255, 0, 0.2);
+  color: var(--neon-green);
+}
+
+.login-page input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+/* Поле с ошибкой */
+.login-page input.error-field {
+  border-color: #ff0000 !important;
+  box-shadow: 
+    0 0 10px #ff0000,
+    inset 0 0 5px rgba(255, 0, 0, 0.2);
+  animation: error-pulse 0.5s;
+}
+
+@keyframes error-pulse {
+  0%, 100% { border-color: #ff0000; }
+  50% { border-color: #ff6666; }
+}
+
+/* Кнопка входа */
+.login-page button[type="submit"] {
+  background-color: transparent;
+  border: 2px solid var(--neon-green);
+  color: var(--neon-green);
+  padding: 1.2rem;
+  font-size: 1.2rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  margin-top: 1rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+  border-radius: 2px;
+  width: 100%;
+}
+
+.login-page button[type="submit"]:hover:not(:disabled) {
+  background-color: var(--neon-green);
+  color: #000000;
+  box-shadow: 
+    0 0 25px var(--neon-green),
+    0 0 40px var(--neon-green);
+  transform: translateY(-3px);
+}
+
+.login-page button[type="submit"]:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: rgba(0, 255, 0, 0.2);
+  color: rgba(0, 255, 0, 0.2);
+  box-shadow: none;
+}
+
+/* Эффект заряда для кнопки */
+.login-page button[type="submit"]::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(0, 255, 0, 0.2), 
+    transparent);
+  transition: left 0.5s;
+}
+
+.login-page button[type="submit"]:hover::before {
+  left: 100%;
+}
+
+/* Ошибки валидации */
+.login-page form > div > div[style*="color: #d32f2f"] {
+  color: #ff0000 !important;
+  text-shadow: 0 0 8px #ff0000;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background-color: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.4);
+  border-radius: 2px;
+  animation: error-glitch 0.5s infinite;
+}
+
+@keyframes error-glitch {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-1px); }
+  75% { transform: translateX(1px); }
+}
+
+/* Ошибка сервера (submitError) */
+.login-page > div[style*="color: #d32f2f"] {
+  color: #ff0000 !important;
+  text-shadow: 0 0 10px #ff0000;
+  background-color: rgba(255, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 0, 0, 0.4) !important;
+  padding: 1rem !important;
+  border-radius: 2px;
+  margin-bottom: 1.5rem !important;
+  animation: server-error-glitch 1s infinite;
+}
+
+@keyframes server-error-glitch {
+  0%, 100% { 
+    opacity: 1;
+    transform: translateX(0);
+  }
+  25% { 
+    opacity: 0.9;
+    transform: translateX(-2px);
+  }
+  75% { 
+    opacity: 0.9;
+    transform: translateX(2px);
+  }
+}
+
+/* Ссылка на регистрацию */
+.login-page p {
+  text-align: center;
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--neon-blue);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+}
+
+.login-page a {
+  color: var(--neon-pink);
+  text-decoration: none;
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid transparent;
+  transition: all 0.3s;
+  display: block;
+  margin-top: 15px;
+}
+
+.login-page a:hover {
+  color: #000000;
+  background-color: var(--neon-pink);
+  border-color: var(--neon-pink);
+  text-shadow: none;
+  box-shadow: 0 0 10px var(--neon-pink);
+}
+
+/* Загрузочное состояние (если добавишь) */
+.login-loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid var(--neon-blue);
+  border-top: 3px solid transparent;
+  border-radius: 50%;
+  animation: matrix-spin 1.5s linear infinite;
+  margin-right: 12px;
+  vertical-align: middle;
+}
+
+@keyframes matrix-spin {
+  0% { 
+    transform: rotate(0deg); 
+    border-color: var(--neon-blue);
+  }
+  50% { 
+    transform: rotate(180deg); 
+    border-color: var(--neon-green);
+  }
+  100% { 
+    transform: rotate(360deg); 
+    border-color: var(--neon-blue);
+  }
+}
+
+/* Мобильная адаптивность */
+@media (max-width: 480px) {
+  .login-page {
+    margin: 2rem 1rem;
+    padding: 1.5rem;
+  }
+  
+  .login-page h2 {
+    font-size: 1.8rem;
+  }
+}

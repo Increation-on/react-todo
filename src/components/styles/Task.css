@@ -1,0 +1,283 @@
+/* src/styles/Task.css */
+
+/* Контейнер задачи */
+.task {
+  border: 1px solid var(--neon-green);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: flex-start; /* 👈 Изменено с center на flex-start */
+  color: var(--text-color);
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: all 0.3s;
+  border-radius: 4px;
+  gap: 12px; /* 👈 Добавлен отступ между элементами */
+}
+
+.task:hover {
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Чекбокс - выровнен по верху */
+/* Заменяем существующий .task-checkbox в Task.css */
+
+.task-checkbox {
+  /* Скрываем стандартный чекбокс */
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Кастомный контейнер */
+.checkbox-container {
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 3px;
+}
+
+/* Кастомный чекбокс */
+.checkbox-custom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  background-color: transparent;
+  border: 2px solid var(--neon-blue);
+  border-radius: 3px;
+  transition: all 0.3s;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+/* Эффект при наведении */
+.checkbox-container:hover .checkbox-custom {
+  border-color: var(--neon-green);
+  box-shadow: 0 0 10px var(--neon-green);
+}
+
+/* Галочка (скрыта по умолчанию) */
+.checkbox-custom::after {
+  content: '';
+  position: absolute;
+  display: none;
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 10px;
+  border: solid var(--neon-pink);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  box-shadow: 0 0 5px var(--neon-pink);
+}
+
+/* Показываем галочку когда чекбокс отмечен */
+.task-checkbox:checked ~ .checkbox-custom::after {
+  display: block;
+}
+
+/* Анимация при клике */
+.task-checkbox:checked ~ .checkbox-custom {
+  border-color: var(--neon-pink);
+  box-shadow: 
+    0 0 10px var(--neon-pink),
+    inset 0 0 5px rgba(255, 0, 255, 0.2);
+  animation: checkbox-check 0.3s ease-out;
+}
+
+@keyframes checkbox-check {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+/* Текст задачи - растягивается */
+.task-text {
+  flex-grow: 1;
+  overflow: hidden;
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 0.25rem 0;
+  word-break: break-word; /* 👈 Перенос длинных слов */
+  white-space: normal; /* 👈 Изменено с nowrap на normal */
+  min-height: 24px; /* Минимальная высота = чекбокс + отступы */
+  display: flex;
+  align-items: center; /* 👈 Выравнивание текста по центру вертикально */
+}
+
+.task-text.completed {
+  color: var(--neon-blue);
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* Блок действий задачи */
+.task-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+  min-width: 150px;
+  justify-content: flex-end;
+  align-self: center; /* 👈 Выравнивание по центру блока */
+}
+
+/* Кнопки задачи */
+.task-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 34px;
+}
+
+/* Кнопка редактирования */
+.task-button--edit {
+  background-color: transparent;
+  border: 1px solid var(--neon-blue);
+  color: var(--neon-blue);
+  min-width: 60px;
+}
+
+.task-button--edit:hover {
+  background-color: var(--neon-blue);
+  color: #000000;
+  box-shadow: 0 0 15px var(--neon-blue);
+}
+
+/* Кнопка удаления */
+.task-button--delete {
+  background-color: transparent;
+  border: 1px solid #ff0000;
+  color: #ff0000;
+  min-width: 70px;
+}
+
+.task-button--delete:hover {
+  background-color: #ff0000;
+  color: var(--text-color);
+  box-shadow: 0 0 15px #ff0000;
+}
+
+/* Контейнер для чекбокса + текста (опционально) */
+.task-content {
+  display: flex;
+  align-items: flex-start;
+  flex-grow: 1;
+  gap: 12px;
+  min-height: 40px;
+}
+
+/* Альтернативный вариант с гридами */
+.task.grid-layout {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: auto;
+  align-items: start;
+  gap: 12px;
+}
+
+.task.grid-layout .task-checkbox {
+  grid-column: 1;
+  align-self: center;
+}
+
+.task.grid-layout .task-text {
+  grid-column: 2;
+  align-self: center;
+}
+
+.task.grid-layout .task-actions {
+  grid-column: 3;
+  align-self: center;
+}
+
+/* Анимация появления */
+@keyframes task-appear {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.task {
+  animation: task-appear 0.3s ease-out;
+}
+
+/* Анимация выполнения */
+@keyframes task-complete {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.98); }
+  100% { transform: scale(1); }
+}
+
+.task.completed-animation .task-text {
+  animation: task-complete 0.3s ease-out;
+}
+
+/* Для мобильных устройств */
+@media (max-width: 600px) {
+  .task {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .task-content {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .task-text {
+    min-height: auto;
+    white-space: normal;
+    text-align: left;
+    align-items: flex-start;
+  }
+  
+  .task-actions {
+    min-width: 100%;
+    justify-content: center;
+    align-self: center;
+  }
+  
+  .task-button {
+    padding: 8px 16px;
+    min-width: auto;
+    flex-grow: 1;
+    justify-content: center;
+  }
+}
+
+/* Текст внутри кнопок */
+.button-text {
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .button-text {
+    display: none;
+  }
+  
+  .task-button {
+    min-width: 40px;
+    justify-content: center;
+  }
+}
