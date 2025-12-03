@@ -23,6 +23,7 @@ interface TaskStore {
     getCompletedTasks: () => Task[];
     // 🔥 ОЧИСТКА ПРИ СМЕНЕ ПОЛЬЗОВАТЕЛЯ (будет вызываться из authStore)
     clearTasksForCurrentUser: () => void;
+    updateTaskText: (id: number | string, newText: string) => void;
 }
 
 export const useTaskStore = create<TaskStore>()(
@@ -98,6 +99,35 @@ export const useTaskStore = create<TaskStore>()(
                 return get().tasks.filter(task =>
                     task.userId === userId && task.completed
                 );
+            },
+
+            updateTaskText: (id, newText) => {
+                const userId = useAuthStore.getState().getUserId();
+                const trimmedText = newText.trim();
+                
+                if (!trimmedText) {
+                    console.warn('Попытка обновить задачу пустым текстом');
+                    return;
+                }
+                
+                if (!userId) {
+                    console.error('Нельзя обновить задачу: пользователь не авторизован');
+                    return;
+                }
+                
+                set(state => ({
+                    tasks: state.tasks.map(task =>
+                        task.id === id && task.userId === userId // 🔥 ПРОВЕРЯЕМ ВЛАДЕЛЬЦА
+                            ? { 
+                                ...task, 
+                                text: trimmedText,
+                                // Можно добавить updatedAt если нужно
+                              }
+                            : task
+                    )
+                }));
+                
+                console.log(`✅ Задача ${id} обновлена: "${trimmedText}"`);
             },
 
             // 🔥 ОЧИСТКА ЗАДАЧ В ПАМЯТИ (НЕ В LOCALSTORAGE)

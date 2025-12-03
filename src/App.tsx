@@ -13,6 +13,7 @@ import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import { PublicOnlyRoute } from './components/PublicOnlyRoute.tsx';
 import RegisterPage from './components/pages/RegisterPage.tsx';
 import AuthNotification from './components/notifications/AuthNotification/AuthNotification.tsx';
+import EditModal from './components/EditModal.tsx';
 
 const App = () => {
 
@@ -35,6 +36,8 @@ useEffect(() => {
     <Router>
       <div className="App">
         <AuthNotification />
+        
+        <EditModal/>
         {/* ШАПКА С ВЫХОДОМ */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <h1>React To-Do</h1>

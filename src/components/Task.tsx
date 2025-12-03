@@ -4,6 +4,7 @@
  * Паттерн: Presentational Component / Dumb Component
  */
 import React from "react"
+import { useUIStore } from "../store/UIStore"
 
 interface Task {
     id: number | string,
@@ -18,6 +19,7 @@ interface TaskProps {
 }
 
 const Task = React.memo(({ task, onToggle, onDelete }: TaskProps) => {
+    const { openEditModal } = useUIStore()
     // ✅ PROPS: Деструктуризация пропсов для удобства доступа
     // task - данные задачи, onToggle/onDelete - callback функции
     return (
@@ -33,6 +35,13 @@ const Task = React.memo(({ task, onToggle, onDelete }: TaskProps) => {
                 checked={task.completed}
                 onChange={() => onToggle(task.id)}  // 🎯 EVENT: Передаем задачу в колбэк
             />
+             <button 
+                    onClick={()=> openEditModal(task.id, task.text)}
+                    className="task-btn task-btn--edit"
+                    title="Edit task"
+                >
+                    ✏️
+                </button>
 
             {/* ✅ UI: Кнопка удаления задачи */}
             <button onClick={
