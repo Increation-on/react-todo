@@ -8,12 +8,12 @@ import CompletedTasks from './components/pages/CompletedTasks.tsx';
 import { useTaskStats } from './hooks/useTaskStats.tsx';
 import { useAuthStore } from './store/AuthStore.tsx';
 import LoginPage from './components/pages/LoginPage.tsx';
-import { LogoutButton } from './components/LogoutButton.tsx';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import { PublicOnlyRoute } from './components/PublicOnlyRoute.tsx';
 import RegisterPage from './components/pages/RegisterPage.tsx';
 import AuthNotification from './components/notifications/AuthNotification/AuthNotification.tsx';
 import EditModal from './components/EditModal.tsx';
+import Header from './components/Header.tsx';
 
 const App = () => {
 
@@ -39,10 +39,7 @@ useEffect(() => {
         
         <EditModal/>
         {/* ШАПКА С ВЫХОДОМ */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1>React To-Do</h1>
-          {token && <LogoutButton />}
-        </div>
+        <Header/>
 
         {/* НАВИГАЦИЯ ПО ЗАДАЧАМ (только для авторизованных) */}
         {token && (
