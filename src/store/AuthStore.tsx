@@ -165,7 +165,7 @@ export const useAuthStore = create<AuthStore>((set, get) => {
       
       window.dispatchEvent(new CustomEvent('authExpired'));
     }
-  }, 5000); // Проверка каждые 5 секунд вместо 30
+  }, 30000); 
   
   return () => {
     console.log('⏰ Остановка слежения');

@@ -1,0 +1,49 @@
+/* LogoutButton.css */
+.logout-button {
+    background: linear-gradient(135deg, rgba(255, 0, 255, 0.1), rgba(0, 255, 255, 0.1));
+    border: 1px solid var(--neon-pink);
+    color: var(--neon-pink);
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(255, 0, 255, 0.5);
+    margin-left: 15px;
+}
+
+.logout-button:hover {
+    background: linear-gradient(135deg, rgba(255, 0, 255, 0.2), rgba(0, 255, 255, 0.2));
+    border-color: var(--neon-blue);
+    color: var(--neon-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 0, 255, 0.3);
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+}
+
+.logout-button:active {
+    transform: translateY(0);
+}
+
+.logout-icon {
+    font-size: 1.2rem;
+}
+
+.logout-text {
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .logout-button {
+        padding: 0.4rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .logout-text {
+        display: none; /* На мобильных оставляем только иконку */
+    }
+}
