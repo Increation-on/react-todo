@@ -1,0 +1,269 @@
+/* src/components/Search/styles/Search.css */
+
+.search-section {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 3rem 0.75rem 1rem;
+  background-color: #000000;
+  border: 2px solid var(--neon-blue);
+  border-radius: 4px;
+  color: var(--neon-green);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(0, 255, 0, 0.3);
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+}
+
+.search-input:focus {
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  animation: inputGlitch 0.5s infinite;
+}
+
+.search-input::placeholder {
+  color: rgba(0, 255, 0, 0.5);
+  font-style: italic;
+}
+
+.search-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  border-color: #666;
+}
+
+@keyframes inputGlitch {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-1px);
+  }
+  50% {
+    transform: translateX(1px);
+  }
+  75% {
+    transform: translateX(-1px);
+  }
+}
+
+/* Кнопка очистки */
+.search-clear-button {
+  position: absolute;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--neon-pink);
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+  transition: all 0.2s ease;
+  text-shadow: 0 0 8px rgba(255, 0, 255, 0.7);
+}
+
+.search-clear-button:hover:not(:disabled) {
+  color: var(--neon-blue);
+  transform: scale(1.2);
+  text-shadow: 0 0 12px rgba(0, 255, 255, 0.9);
+}
+
+.search-clear-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  color: #666;
+}
+
+/* Контейнер автокомплита */
+.autocomplete-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.95);
+  border: 2px solid var(--neon-pink);
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(255, 0, 255, 0.3);
+  backdrop-filter: blur(5px);
+}
+
+/* Скрытие скроллбара для стилизации */
+.autocomplete-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.autocomplete-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.autocomplete-list::-webkit-scrollbar-thumb {
+  background: var(--neon-green);
+  border-radius: 4px;
+}
+
+.autocomplete-list::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-blue);
+}
+
+/* Элементы автокомплита */
+.autocomplete-item {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(0, 255, 0, 0.2);
+  text-align: left;
+  color: var(--text-color);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-item:hover,
+.autocomplete-item:focus {
+  background-color: rgba(0, 255, 0, 0.1);
+  color: var(--neon-green);
+  outline: none;
+  padding-left: 1.25rem;
+  text-shadow: 0 0 5px rgba(0, 255, 0, 0.7);
+}
+
+.autocomplete-item:active {
+  background-color: rgba(255, 0, 255, 0.15);
+  color: var(--neon-pink);
+}
+
+/* Текст внутри элемента */
+.item-text {
+  flex: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Индикатор выбранной задачи (если понадобится) */
+.autocomplete-item.selected {
+  background-color: rgba(0, 255, 255, 0.1);
+  color: var(--neon-blue);
+  border-left: 3px solid var(--neon-blue);
+}
+
+/* Индикатор загрузки (если будет) */
+.search-loading-indicator {
+  position: absolute;
+  right: 3rem;
+  color: var(--neon-blue);
+  font-size: 0.9rem;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Эффект свечения при появлении */
+@keyframes glowAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    box-shadow: 0 0 0 rgba(255, 0, 255, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+  }
+}
+
+.autocomplete-list {
+  animation: glowAppear 0.3s ease-out;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .search-input {
+    padding: 0.6rem 2.5rem 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .search-clear-button {
+    right: 0.6rem;
+    font-size: 1.3rem;
+  }
+  
+  .autocomplete-item {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Темная тема (уже темная, но для полноты) */
+@media (prefers-color-scheme: dark) {
+  .search-input {
+    background-color: #111;
+  }
+  
+  .autocomplete-list {
+    background-color: rgba(20, 20, 20, 0.98);
+  }
+}
+
+/* В Search.css добавляем в конец: */
+
+/* Стили для подсветки совпадений */
+.highlight-match {
+    color: var(--neon-green);
+    font-weight: bold;
+    text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    background-color: rgba(0, 255, 0, 0.1);
+    padding: 0 2px;
+    border-radius: 2px;
+    animation: pulseHighlight 1.5s infinite;
+}
+
+@keyframes pulseHighlight {
+    0%, 100% {
+        background-color: rgba(0, 255, 0, 0.1);
+        text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
+    }
+    50% {
+        background-color: rgba(0, 255, 0, 0.2);
+        text-shadow: 0 0 12px rgba(0, 255, 0, 0.9);
+    }
+}
+
+/* Для dark mode */
+@media (prefers-color-scheme: dark) {
+    .highlight-match {
+        background-color: rgba(0, 255, 0, 0.15);
+    }
+}
