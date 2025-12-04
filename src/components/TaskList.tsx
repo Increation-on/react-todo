@@ -1,5 +1,5 @@
-// TaskList.tsx - упрощенная версия без onBlur
-import { useState, useCallback, useRef, useEffect } from "react"
+// TaskList.tsx
+import { useState, useCallback, useEffect } from "react"
 import Task from "./Task.tsx"
 import AddTask from "./AddTask.tsx"
 import Search from "./Search.tsx"
@@ -40,9 +40,17 @@ const TaskList: React.FC = () => {
         debounceMs: 300
     })
 
-    // Состояния для управления автокомплитом
+    // 🔥 Теперь храним только ID выбранной задачи
+    const [selectedTaskId, setSelectedTaskId] = useState<string | number | null>(null)
     const [showAutocomplete, setShowAutocomplete] = useState(true)
-    const [selectedTaskFromSearch, setSelectedTaskFromSearch] = useState<TaskType | null>(null)
+
+    // 🔥 Находим актуальную задачу по ID
+    const selectedTask = selectedTaskId 
+        ? tasks.find(t => t.id === selectedTaskId) 
+        : null
+
+    // 🔥 Показываем либо выбранную, либо все задачи
+    const tasksToShow = selectedTask ? [selectedTask] : tasks
 
     // Обработчик изменения инпута
     const handleInputChange = useCallback((value: string): void => {
@@ -54,23 +62,15 @@ const TaskList: React.FC = () => {
 
     // Обработчик выбора задачи из поиска
     const handleTaskSelect = useCallback((selectedTask: TaskType): void => {
-        // 1. Заполняем инпут текстом выбранной задачи
-        console.log('🟢 handleTaskSelect вызван')
-    console.log('🟢 showAutocomplete до:', showAutocomplete)
         setQuery(selectedTask.text)
-        
-        // 2. Фильтруем список
-        setSelectedTaskFromSearch(selectedTask)
-        
-        // 3. Скрываем автокомплит НЕМЕДЛЕННО
+        setSelectedTaskId(selectedTask.id) // 🔥 Сохраняем только ID
         setShowAutocomplete(false)
-        console.log('🟢 showAutocomplete после установки false')
-    }, [setQuery, , showAutocomplete])
+    }, [setQuery])
 
     // Обработчик очистки поиска
     const handleClearSearch = useCallback((): void => {
         clearSearch()
-        setSelectedTaskFromSearch(null)
+        setSelectedTaskId(null) // 🔥 Сбрасываем ID
         setShowAutocomplete(false)
     }, [clearSearch])
 
@@ -108,9 +108,6 @@ const TaskList: React.FC = () => {
         }
     }, [])
 
-    // Вычисляем какие задачи показывать
-    const tasksToShow = selectedTaskFromSearch ? [selectedTaskFromSearch] : tasks
-
     const { loadTasksFromAPI, isLoading } = useTasksAPI(tasks)
 
     const handleLoadFromAPI = async (): Promise<void> => {
@@ -119,7 +116,7 @@ const TaskList: React.FC = () => {
             tasksToAdd.forEach(task => {
                 addTask(task.text)
             })
-            setSelectedTaskFromSearch(null)
+            setSelectedTaskId(null) // 🔥 Сбрасываем при загрузке новых задач
             setShowAutocomplete(false)
         } catch (error) {
             console.error('Failed to load tasks:', error)
@@ -128,19 +125,24 @@ const TaskList: React.FC = () => {
 
     const handleToggle = useCallback((id: string | number): void => {
         toggleTask(id)
-        setSelectedTaskFromSearch(null)
+        setSelectedTaskId(null) // 🔥 Сбрасываем при изменении задачи
     }, [toggleTask])
 
     const handleDelete = useCallback((id: string | number): void => {
         if (window.confirm('Вы уверены что хотите удалить задачу?')) {
             deleteTask(id)
-            setSelectedTaskFromSearch(null)
+            setSelectedTaskId(null) // 🔥 Сбрасываем при удалении
+            
+            // Если удалили выбранную задачу - очищаем поиск
+            if (id === selectedTaskId) {
+                clearSearch()
+            }
         }
-    }, [deleteTask])
+    }, [deleteTask, selectedTaskId, clearSearch])
 
     const handleAddTaskWithReset = useCallback((text: string): void => {
         addTask(text)
-        setSelectedTaskFromSearch(null)
+        setSelectedTaskId(null) // 🔥 Сбрасываем при добавлении новой
         setShowAutocomplete(false)
     }, [addTask])
 
