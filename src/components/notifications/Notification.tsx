@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react'; // Добавляем useCallback
 import { useNotificationStore } from '../../store/NotificationStore.tsx';
 import './Notification.css';
 
@@ -9,6 +9,17 @@ const Notification = () => {
   // Берем ВСЕ уведомления
   const allNotifications = notifications;
   
+  // Выносим handleRemove в useCallback
+  const handleRemove = useCallback((id: number) => {
+    setRemovingIds(prev => [...prev, id]);
+    
+    setTimeout(() => {
+      removeNotification(id);
+      setRemovingIds(prev => prev.filter(removeId => removeId !== id));
+    }, 300);
+  }, [removeNotification]); // Зависимость от removeNotification
+  
+  // Используем handleRemove в useEffect
   useEffect(() => {
     allNotifications.forEach(notification => {
       const timer = setTimeout(() => {
@@ -17,16 +28,7 @@ const Notification = () => {
       
       return () => clearTimeout(timer);
     });
-  }, [allNotifications]);
-  
-  const handleRemove = (id: number) => {
-    setRemovingIds(prev => [...prev, id]);
-    
-    setTimeout(() => {
-      removeNotification(id);
-      setRemovingIds(prev => prev.filter(removeId => removeId !== id));
-    }, 300);
-  };
+  }, [allNotifications, handleRemove]); // Добавляем handleRemove в зависимости
   
   const handleClose = (id: number, e: React.MouseEvent) => {
     e.stopPropagation();

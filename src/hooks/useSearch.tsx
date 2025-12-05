@@ -1,6 +1,6 @@
 // hooks/useSearch.ts
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { debounce } from '../utils/debounce'
+import { debounce } from '../utils/debounce.ts'
 
 interface UseSearchProps<T> {
     items: T[]

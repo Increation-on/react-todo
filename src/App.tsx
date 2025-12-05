@@ -2,7 +2,7 @@
 import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import './App.css';
-import TaskList from './components/TaskList.tsx';
+import TaskList from './components/TaskList/TaskList.tsx';
 import ActiveTasks from './components/pages/ActiveTasks.tsx';
 import CompletedTasks from './components/pages/CompletedTasks.tsx';
 import { useTaskStats } from './hooks/useTaskStats.tsx';
