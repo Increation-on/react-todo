@@ -81,3 +81,45 @@ nav a:hover {
   color: #00ff00 !important;
   text-shadow: 0 0 10px #00ff00;
 }
+
+/* Стили для новой структуры */
+.app-main {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.app-navigation {
+  margin: 20px 0;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.nav-link {
+  color: var(--text-color);
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--neon-blue);
+  background: rgba(0, 255, 255, 0.1);
+}
+
+.nav-link.active-link {
+  color: var(--neon-green);
+  text-shadow: 0 0 10px var(--neon-green);
+  font-weight: bold;
+}
+
+.nav-link-count {
+  margin-left: 5px;
+  opacity: 0.8;
+  font-size: 0.9em;
+}

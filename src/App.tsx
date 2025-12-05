@@ -1,115 +1,26 @@
-// /src/App.tsx
-import { BrowserRouter as Router, Routes, Route, NavLink, Navigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import './App.css';
-import TaskList from './components/TaskList/TaskList.tsx';
-import ActiveTasks from './components/pages/ActiveTasks.tsx';
-import CompletedTasks from './components/pages/CompletedTasks.tsx';
-import { useTaskStats } from './hooks/useTaskStats.tsx';
 import { useAuthStore } from './store/AuthStore.tsx';
-import LoginPage from './components/pages/LoginPage.tsx';
-import { ProtectedRoute } from './components/ProtectedRoute.tsx';
-import { PublicOnlyRoute } from './components/PublicOnlyRoute.tsx';
-import RegisterPage from './components/pages/RegisterPage.tsx';
-import Notification from './components/notifications/Notification.tsx';
-import EditModal from './components/EditModal.tsx';
-import Header from './components/Header.tsx';
+import AppRouter from './components/router/AppRouter.tsx';
+import MainLayout from './components/layout/MainLayout.tsx';
+import { useTokenWatch } from './hooks/useTokenWatch.tsx'
+import { BrowserRouter as Router } from 'react-router-dom';
+import './App.css';
 
 const App = () => {
+  // Слежение за токеном
+  useTokenWatch();
 
- // В App.tsx компоненте:
- const token = useAuthStore((state) => state.token);
-useEffect(() => {
-  if (token) {
-    console.log('🔐 Есть токен, запускаем слежение');
-    const cleanup = useAuthStore.getState().startTokenWatch();
-    return cleanup;
-  }
-}, [token]);
-
-  const { total, active, completed } = useTaskStats();
- 
+  const token = useAuthStore((state) => state.token);
 
   console.log('🏠 App render. Auth:', !!token);
 
   return (
     <Router>
-      <div className="App">
-        <Notification />
-        
-        <EditModal/>
-        {/* ШАПКА С ВЫХОДОМ */}
-        <Header/>
-
-        {/* НАВИГАЦИЯ ПО ЗАДАЧАМ (только для авторизованных) */}
-        {token && (
-          <nav>
-            <NavLink
-              className={({ isActive }) => isActive ? 'active-link' : ''}
-              to="/"
-            >
-              All tasks({total})
-            </NavLink>
-            <NavLink
-              className={({ isActive }) => isActive ? 'active-link' : ''}
-              to="/active"
-            >
-              Active({active})
-            </NavLink>
-            <NavLink
-              className={({ isActive }) => isActive ? 'active-link' : ''}
-              to="/completed"
-            >
-              Completed({completed})
-            </NavLink>
-          </nav>
-        )}
-
-        {/* МАРШРУТЫ */}
-        <Routes>
-          {/* 📍 ПУБЛИЧНЫЕ МАРШРУТЫ */}
-          <Route path="/login" element={
-            <PublicOnlyRoute>
-              <LoginPage />
-            </PublicOnlyRoute>
-          } />
-
-          <Route path="/register" element={
-            <PublicOnlyRoute>
-              <RegisterPage />
-            </PublicOnlyRoute>
-          } />
-
-          {/* 🔐 ПРИВАТНЫЕ МАРШРУТЫ */}
-          <Route path="/" element={
-            <ProtectedRoute>
-              <TaskList />
-            </ProtectedRoute>
-          } />
-
-          <Route path="/active" element={
-            <ProtectedRoute>
-              <ActiveTasks />
-            </ProtectedRoute>
-          } />
-
-          <Route path="/completed" element={
-            <ProtectedRoute>
-              <CompletedTasks />
-            </ProtectedRoute>
-          } />
-
-          {/* 🎯 ОБРАБОТКА НЕИЗВЕСТНЫХ ПУТЕЙ */}
-          <Route path="*" element={
-            <ProtectedRoute>
-              {/* Можно создать NotFoundPage, но пока редирект */}
-              <Navigate to="/" replace />
-            </ProtectedRoute>
-          } />
-        </Routes>
-      </div>
+      <MainLayout showNavigation={!!token}>
+        <AppRouter />
+      </MainLayout>
     </Router>
+
   );
-}
+};
 
 export default App;
