@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useAuthStore } from '../../store/AuthStore.tsx';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useValidation } from '../../hooks/useValidation.tsx';
-import { useNotificationStore } from '../../store/NotificationStore.tsx';
 import './../styles/LoginPage.css'
 
 const LoginPage = () => {
@@ -37,8 +36,6 @@ const LoginPage = () => {
                 setSubmitError('Неверный email или пароль');
                 return;
             }
-
-            // showNotification('auth', 'Вход выполнен успешно!', 'success');
 
             // Умный редирект
             const state = location.state as { from?: string } | undefined;
