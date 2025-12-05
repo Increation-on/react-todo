@@ -1,38 +1,48 @@
-// EditModal.tsx - чистая рабочая версия
-import { useState, useEffect } from 'react'
-import { useUIStore } from '../store/UIStore'
-import { useTaskStore } from '../store/TaskStore.tsx'
-import './styles/EditModal.css'
+import { useState, useEffect, KeyboardEvent } from 'react';
+import { useUIStore } from '../store/UIStore';
+import { useTaskStore } from '../store/TaskStore.tsx';
+import { useTaskNotifications } from '../hooks/useTaskNotification.tsx';
+import './styles/EditModal.css';
 
 const EditModal = () => {
-  const { editModal, closeEditModal } = useUIStore()
-  const { updateTaskText } = useTaskStore() // 👈 используем updateTask (а не updateTaskText)
+  const { editModal, closeEditModal } = useUIStore();
+  const { updateTaskText } = useTaskStore();
+  const taskNotify = useTaskNotifications(); // Добавляем хук
   
-  const [inputValue, setInputValue] = useState('')
+  const [inputValue, setInputValue] = useState('');
   
+  // Сбрасываем значение при открытии модалки
   useEffect(() => {
     if (editModal?.initialText !== undefined) {
-      setInputValue(editModal.initialText)
+      setInputValue(editModal.initialText);
     }
-  }, [editModal?.initialText, editModal?.isOpen])
+  }, [editModal?.initialText, editModal?.isOpen]);
   
-  if (!editModal || !editModal.isOpen) return null
+  if (!editModal || !editModal.isOpen) return null;
   
   const isTextValid = 
     inputValue.trim() !== '' && 
-    inputValue.trim() !== (editModal.initialText || '').trim()
+    inputValue.trim() !== (editModal.initialText || '').trim();
   
   const handleSave = () => {
     if (isTextValid && editModal?.taskId) {
-      updateTaskText(editModal.taskId, inputValue.trim()) // 👈 вызываем updateTask
-      closeEditModal()
+      const trimmedText = inputValue.trim();
+      updateTaskText(editModal.taskId, trimmedText);
+      closeEditModal();
+      
+      // 👇 ПОКАЗЫВАЕМ УВЕДОМЛЕНИЕ ПОСЛЕ СОХРАНЕНИЯ
+      taskNotify.updated(trimmedText);
     }
-  }
+  };
   
-  const handleKeyDown = (e) => {
-    if (e.key === 'Escape') closeEditModal()
-    if (e.key === 'Enter' && isTextValid) handleSave()
-  }
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Escape') {
+      closeEditModal();
+    }
+    if (e.key === 'Enter' && isTextValid) {
+      handleSave();
+    }
+  };
   
   return (
     <div 
@@ -43,7 +53,8 @@ const EditModal = () => {
         className="edit-modal__content"
         onClick={e => e.stopPropagation()}
       >
-        <h3 className="edit-modal__title">Edit Task</h3>
+        <h3 className="edit-modal__title">✏️ Edit Task</h3>
+        
         <input
           type="text"
           className="edit-modal__input"
@@ -53,24 +64,33 @@ const EditModal = () => {
           placeholder="Enter task text..."
           autoFocus
         />
+        
         <div className="edit-modal__actions">
           <button 
             onClick={handleSave}
             disabled={!isTextValid}
             className="edit-modal__btn edit-modal__btn--save"
           >
-            Save
+            💾 Save
           </button>
+          
           <button 
             onClick={closeEditModal}
             className="edit-modal__btn edit-modal__btn--cancel"
           >
-            Cancel
+            ❌ Cancel
           </button>
         </div>
+        
+        {/* Подсказка для пользователя */}
+        {!isTextValid && inputValue.trim() !== '' && (
+          <div className="edit-modal__hint">
+            Измените текст задачи для сохранения
+          </div>
+        )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default EditModal
+export default EditModal;
