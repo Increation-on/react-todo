@@ -1,4 +1,3 @@
-// TaskList.tsx
 import { useState, useCallback, useEffect } from "react"
 import Task from "./Task.tsx"
 import AddTask from "./AddTask.tsx"
@@ -7,6 +6,7 @@ import { useTasksAPI } from '../hooks/useTasksAPI.tsx'
 import { useTaskStore } from "../store/TaskStore.tsx"
 import { useAuthStore } from "../store/AuthStore.tsx"
 import { useSearch } from '../hooks/useSearch.tsx'
+import { useTaskNotifications } from "../hooks/useTaskNotification.tsx"
 import './styles/TaskList.css'
 
 type TaskType = {
@@ -25,6 +25,9 @@ const TaskList: React.FC = () => {
     const addTask = useTaskStore(state => state.addTask)
     const toggleTask = useTaskStore(state => state.toggleTask)
     const deleteTask = useTaskStore(state => state.deleteTask)
+
+    // 👇 ДОБАВЛЯЕМ ХУК ДЛЯ УВЕДОМЛЕНИЙ
+    const taskNotify = useTaskNotifications()
 
     // Используем хук useSearch
     const {
@@ -110,48 +113,86 @@ const TaskList: React.FC = () => {
 
     const { loadTasksFromAPI, isLoading } = useTasksAPI(tasks)
 
+    // 👇 ОБНОВЛЕННАЯ ФУНКЦИЯ С УВЕДОМЛЕНИЯМИ
     const handleLoadFromAPI = async (): Promise<void> => {
         try {
+            // Опционально: уведомление о начале загрузки
+            // taskNotify.api.loading();
+            
             const tasksToAdd = await loadTasksFromAPI()
+            
+            // Уведомление об успешной загрузке
+            if (tasksToAdd.length > 0) {
+                taskNotify.api.loadSuccess(tasksToAdd.length);
+            } else {
+                // Если задач нет
+                taskNotify.api.noData();
+            }
+            
             tasksToAdd.forEach(task => {
                 addTask(task.text)
             })
+            
             setSelectedTaskId(null) // 🔥 Сбрасываем при загрузке новых задач
             setShowAutocomplete(false)
+            
         } catch (error) {
             console.error('Failed to load tasks:', error)
+            
+            // Уведомление об ошибке
+            let errorMessage = 'Ошибка загрузки задач';
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            } else if (typeof error === 'string') {
+                errorMessage = error;
+            }
+            
+            taskNotify.api.loadError(errorMessage);
         }
     }
 
     const handleToggle = useCallback((id: string | number): void => {
-        toggleTask(id)
+        const task = tasks.find(t => t.id === id);
+        if (task) {
+            toggleTask(id);
+            taskNotify.toggled(task.text, !task.completed); // Уведомление о переключении
+        }
         setSelectedTaskId(null) // 🔥 Сбрасываем при изменении задачи
-    }, [toggleTask])
+    }, [toggleTask, tasks, taskNotify])
 
+    // 👇 ОБНОВЛЕННАЯ ФУНКЦИЯ УДАЛЕНИЯ С КАСТОМНЫМ ПОДТВЕРЖДЕНИЕМ
     const handleDelete = useCallback((id: string | number): void => {
-        if (window.confirm('Вы уверены что хотите удалить задачу?')) {
-            deleteTask(id)
-            setSelectedTaskId(null) // 🔥 Сбрасываем при удалении
+        const task = tasks.find(t => t.id === id);
+        if (!task) return;
+        
+        // Вместо window.confirm используем нашу систему
+        taskNotify.confirmDelete(task.text, () => {
+            // Этот колбэк выполнится только при подтверждении
+            deleteTask(id);
             
             // Если удалили выбранную задачу - очищаем поиск
             if (id === selectedTaskId) {
-                clearSearch()
+                clearSearch();
             }
-        }
-    }, [deleteTask, selectedTaskId, clearSearch])
+        });
+        
+        setSelectedTaskId(null); // Сбрасываем при удалении
+    }, [deleteTask, selectedTaskId, clearSearch, tasks, taskNotify])
 
     const handleAddTaskWithReset = useCallback((text: string): void => {
         addTask(text)
         setSelectedTaskId(null) // 🔥 Сбрасываем при добавлении новой
         setShowAutocomplete(false)
+        // Уведомление показывается в AddTask компоненте
     }, [addTask])
 
     return (
         <div className="task-list-container">
             <h2 className="task-list-title">Tasks List</h2>
             
+            {/* 👇 КНОПКА ЗАГРУЗКИ ИЗ API С УВЕДОМЛЕНИЯМИ */}
             <button 
-                onClick={handleLoadFromAPI} 
+                onClick={handleLoadFromAPI}
                 disabled={isLoading}
                 className="list-control-button"
                 style={{ marginBottom: '1rem' }}
@@ -160,8 +201,6 @@ const TaskList: React.FC = () => {
                 {isLoading ? 'Loading...' : 'Load Tasks from API'}
             </button>
             
-            
-
             <AddTask onAddTask={handleAddTaskWithReset} />
 
             <Search 

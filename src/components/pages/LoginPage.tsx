@@ -14,7 +14,7 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const showNotification = useNotificationStore(state => state.showNotification);
+    // const showNotification = useNotificationStore(state => state.showNotification);
 
     // 🔥 ИСПОЛЬЗУЕМ ХУК ВАЛИДАЦИИ
     const { errors, validateLoginForm, clearErrors } = useValidation();
@@ -33,12 +33,12 @@ const LoginPage = () => {
             const success = login(email, password);
 
             if (!success) {
-                showNotification('auth', 'Неверный email или пароль', 'error');
+                // showNotification('auth', 'Неверный email или пароль', 'error');
                 setSubmitError('Неверный email или пароль');
                 return;
             }
 
-            showNotification('auth', 'Вход выполнен успешно!', 'success');
+            // showNotification('auth', 'Вход выполнен успешно!', 'success');
 
             // Умный редирект
             const state = location.state as { from?: string } | undefined;

@@ -115,7 +115,6 @@ export const useAuthStore = create<AuthStore>((set, get) => {
     logout: () => {
       localStorage.removeItem('token');
       set({ token: null, currentUser: null });
-      showNotification('Выход выполнен', 'info');
     },
     
     isLoggedIn: () => {

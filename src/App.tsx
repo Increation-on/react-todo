@@ -11,7 +11,7 @@ import LoginPage from './components/pages/LoginPage.tsx';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import { PublicOnlyRoute } from './components/PublicOnlyRoute.tsx';
 import RegisterPage from './components/pages/RegisterPage.tsx';
-import AuthNotification from './components/notifications/AuthNotification/AuthNotification.tsx';
+import Notification from './components/notifications/Notification.tsx';
 import EditModal from './components/EditModal.tsx';
 import Header from './components/Header.tsx';
 
@@ -35,7 +35,7 @@ useEffect(() => {
   return (
     <Router>
       <div className="App">
-        <AuthNotification />
+        <Notification />
         
         <EditModal/>
         {/* ШАПКА С ВЫХОДОМ */}
