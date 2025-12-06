@@ -1,9 +1,9 @@
 import { useAuthStore } from './store/AuthStore.tsx';
-import AppRouter from './components/router/AppRouter.tsx';
+import AppRouter from './router/AppRouter.tsx';
 import MainLayout from './components/layout/MainLayout.tsx';
-import { useTokenWatch } from './hooks/useTokenWatch.tsx'
+import { useTokenWatch } from './hooks/auth/useTokenWatch.tsx';
 import { BrowserRouter as Router } from 'react-router-dom';
-import './components/styles/App.css'
+import './styles/App.css'
 
 const App = () => {
   // Слежение за токеном
