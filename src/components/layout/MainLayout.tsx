@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
-import Notification from './../notifications/Notification.tsx'
-import EditModal from './../EditModal.tsx'
-import Header from './../Header.tsx'
+import Notification from '../../ui/Notification.tsx';
+import EditModal from './../tasks/EditModal.tsx'
+import Header from './Header.tsx'
 import AppNavigation from './AppNavigation.tsx'
 
 interface MainLayoutProps {

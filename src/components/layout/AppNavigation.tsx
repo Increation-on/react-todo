@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
-import { useAppNavigation } from '../../hooks/useAppNavigation.tsx';
-import './../styles/AppNavigation.css'
+import { useAppNavigation } from '../../hooks/ui/useAppNavigation.tsx';
+import './../../styles/AppNavigation.css'
 
 const AppNavigation = () => {
   const navigationItems = useAppNavigation();
