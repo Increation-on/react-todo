@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'; // Добавляем useCallback
 import { useNotificationStore } from '../../store/NotificationStore.tsx';
-import './Notification.css';
+import './../styles/Notification.css'
 
 const Notification = () => {
   const { notifications, removeNotification } = useNotificationStore();

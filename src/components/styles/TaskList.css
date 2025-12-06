@@ -1,9 +1,6 @@
 /* src/styles/TaskList.css */
 
 /* Контейнер списка задач */
-.task-list-container {
-  margin-top: 2rem;
-}
 
 /* Заголовок списка */
 .task-list-title {
@@ -131,3 +128,53 @@
   box-shadow: 0 0 10px #ff0000;
 }
 
+/* В TaskList.css добавь: */
+
+.task-list-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.task-list-title {
+  color: var(--neon-blue);
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 1.5rem;
+  text-shadow: 0 0 10px var(--neon-blue);
+}
+
+.list-control-button {
+  display: block;
+  margin: 0 auto 1rem;
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+  border: 1px solid var(--neon-green);
+  color: var(--neon-pink);
+  padding: 0.6rem 1.5rem;
+  border-radius: 6px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  min-width: 180px;
+}
+
+.list-control-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.2));
+  border-color: var(--neon-pink);
+  color: var(--neon-pink);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 0, 255, 0.3);
+}
+
+.list-control-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .list-control-button {
+    width: 90%;
+    max-width: 250px;
+  }
+}

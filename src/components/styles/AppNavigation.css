@@ -1,0 +1,97 @@
+/* src/components/layout/styles/AppNavigation.css */
+
+/* === ОБЩИЕ СТИЛИ (Desktop - fixed сверху) === */
+.app-navigation {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 30px;
+  padding: 10px;
+  height: 60px;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.95);
+  border-bottom: 2px solid var(--neon-green);
+  z-index: 800;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 255, 0, 0.1);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-color);
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.nav-link:hover {
+  border-color: var(--neon-pink);
+  background: rgba(255, 0, 255, 0.05);
+}
+
+.nav-link.active-link {
+  color: var(--neon-green);
+  background: rgba(0, 255, 0, 0.1);
+  border-color: var(--neon-green);
+  text-shadow: 0 0 8px var(--neon-green);
+}
+
+.nav-link-text {
+  font-weight: bold;
+}
+
+.nav-link-count {
+  color: var(--neon-pink);
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  padding: 2px 8px;
+  margin-left: 8px;
+  font-size: 0.9em;
+  border: 1px solid var(--neon-pink);
+}
+
+/* === МОБИЛЬНАЯ ВЕРСИЯ (НЕ fixed, внутри рамки) === */
+@media (max-width: 768px) {
+  .app-navigation {
+    /* УБИРАЕМ ВСЕ fixed/absolute! */
+    position: static;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    height: auto;
+    margin: 0;
+    border: 2px solid var(--neon-green);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 4px 15px rgba(0, 255, 0, 0.2);
+    overflow: visible;
+  }
+  
+  .nav-link {
+    width: 90%;
+    max-width: 300px;
+    justify-content: center;
+    padding: 12px;
+    min-height: 44px;
+  }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+  .app-navigation {
+    padding: 10px;
+    gap: 6px;
+  }
+  
+  .nav-link {
+    padding: 10px;
+    font-size: 0.9em;
+    width: 95%;
+  }
+}
