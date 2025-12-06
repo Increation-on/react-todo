@@ -1,24 +1,37 @@
 import { useAuthStore } from '../store/AuthStore.tsx'
-import { useNotificationStore } from '../store/NotificationStore.tsx' // Добавляем импорт
+import { useNotificationStore } from '../store/NotificationStore.tsx'
 import './styles/LogoutButton.css'
+import { useState, useEffect } from 'react' // Добавляем
 
 const LogoutButton = () => {
     const logout = useAuthStore(state => state.logout)
-    const { showNotification } = useNotificationStore() // Используем стор
+    const { showNotification } = useNotificationStore()
+    
+    // Определяем, мобильный ли экран
+    const [isMobile, setIsMobile] = useState(false)
+    
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768)
+        }
+        
+        checkMobile() // Проверяем сразу
+        window.addEventListener('resize', checkMobile)
+        
+        return () => window.removeEventListener('resize', checkMobile)
+    }, [])
     
     const handleLogout = () => {
-        // Вместо window.confirm используем наше уведомление
         showNotification(
-            'auth', // variant: auth
-            '⚠️ ВЫЙТИ ИЗ СИСТЕМЫ?', // message
-            'warning', // type: warning
-            10000, // duration: 10 секунд на подтверждение
-            [ // actions: кнопки подтверждения/отмены
+            'auth',
+            '⚠️ ВЫЙТИ ИЗ СИСТЕМЫ?',
+            'warning',
+            10000,
+            [
                 {
                     label: 'ПОДТВЕРДИТЬ ВЫХОД',
                     onClick: () => {
                         logout();
-                        // Уведомление об успешном выходе
                         showNotification('auth', '🚪 ВЫХОД ВЫПОЛНЕН', 'success', 3000);
                     },
                     type: 'primary' as const
@@ -26,7 +39,6 @@ const LogoutButton = () => {
                 {
                     label: 'ОСТАТЬСЯ',
                     onClick: () => {
-                        // Уведомление об отмене выхода
                         showNotification('auth', '👨‍💻 СЕАНС ПРОДОЛЖЕН', 'info', 2000);
                     },
                     type: 'secondary' as const
@@ -43,7 +55,9 @@ const LogoutButton = () => {
             title="Logout"
         >
             <span className="logout-icon">🚪</span>
-            <span className="logout-text">Exit System</span>
+            <span className="logout-text">
+                {isMobile ? 'Exit' : 'Exit System'} {/* Меняем текст */}
+            </span>
         </button>
     )
 }

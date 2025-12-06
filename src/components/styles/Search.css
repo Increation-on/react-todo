@@ -208,62 +208,71 @@
   animation: glowAppear 0.3s ease-out;
 }
 
-/* Адаптивность */
+/* === МОБИЛЬНАЯ ВЕРСИЯ (без автокомплита) === */
 @media (max-width: 768px) {
+  .search-section {
+    padding: 0 10px;
+    margin-bottom: 1rem;
+  }
+  
   .search-input {
-    padding: 0.6rem 2.5rem 0.6rem 0.8rem;
-    font-size: 0.9rem;
+    padding: 1rem 3rem 1rem 1rem;
+    font-size: 1rem;
+    min-height: 50px;
+    width: 100%;
+    border-width: 2px;
   }
   
   .search-clear-button {
-    right: 0.6rem;
+    right: 0.8rem;
+    font-size: 1.5rem;
+    min-width: 44px; /* Apple рекомендует минимум 44x44 */
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+  }
+  
+  .search-clear-button:hover {
+    background-color: rgba(255, 0, 255, 0.1);
+  }
+  
+  /* СКРЫВАЕМ АВТОКОМПЛИТ НА МОБИЛЬНЫХ */
+  .autocomplete-list {
+    display: none !important;
+  }
+  
+  /* Можно показать подсказку под инпутом */
+  .search-hint {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--neon-blue);
+    margin-top: 0.5rem;
+    text-align: center;
+    opacity: 0.7;
+    font-style: italic;
+  }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+  .search-input {
+    padding: 0.9rem 2.8rem 0.9rem 0.9rem;
+    font-size: 0.95rem;
+  }
+  
+  .search-clear-button {
+    min-width: 40px;
+    min-height: 40px;
     font-size: 1.3rem;
   }
-  
-  .autocomplete-item {
-    padding: 0.6rem 0.8rem;
-    font-size: 0.85rem;
-  }
 }
 
-/* Темная тема (уже темная, но для полноты) */
-@media (prefers-color-scheme: dark) {
-  .search-input {
-    background-color: #111;
-  }
-  
+/* Планшеты (768px-1024px) - можно оставить автокомплит */
+@media (min-width: 769px) and (max-width: 1024px) {
   .autocomplete-list {
-    background-color: rgba(20, 20, 20, 0.98);
+    max-height: 250px; /* Ограничиваем высоту */
   }
-}
-
-/* В Search.css добавляем в конец: */
-
-/* Стили для подсветки совпадений */
-.highlight-match {
-    color: var(--neon-green);
-    font-weight: bold;
-    text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
-    background-color: rgba(0, 255, 0, 0.1);
-    padding: 0 2px;
-    border-radius: 2px;
-    animation: pulseHighlight 1.5s infinite;
-}
-
-@keyframes pulseHighlight {
-    0%, 100% {
-        background-color: rgba(0, 255, 0, 0.1);
-        text-shadow: 0 0 8px rgba(0, 255, 0, 0.7);
-    }
-    50% {
-        background-color: rgba(0, 255, 0, 0.2);
-        text-shadow: 0 0 12px rgba(0, 255, 0, 0.9);
-    }
-}
-
-/* Для dark mode */
-@media (prefers-color-scheme: dark) {
-    .highlight-match {
-        background-color: rgba(0, 255, 0, 0.15);
-    }
 }

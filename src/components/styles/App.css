@@ -1,0 +1,239 @@
+/* src/styles/App.css */
+
+/* Глобальные стили */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+  background-color: #000000;
+  min-height: 100vh;
+}
+
+@keyframes glitch {
+  0% {
+    transform: translate(0)
+  }
+  20% {
+    transform: translate(-2px, 2px)
+  }
+  40% {
+    transform: translate(-2px, -2px)
+  }
+  60% {
+    transform: translate(2px, 2px)
+  }
+  80% {
+    transform: translate(2px, -2px)
+  }
+  100% {
+    transform: translate(0)
+  }
+}
+
+:root {
+  --glitch-bg: #000000;
+  --neon-green: #00ff00;
+  --neon-pink: #ff00ff;
+  --neon-blue: #00ffff;
+  --text-color: #ffffff;
+}
+
+/* Стили компонента App */
+.App {
+  text-align: center;
+  background-color: #000000;
+  border: 2px solid #00ff00;
+  position: relative;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+h1 {
+  color: #ff00ff;
+  text-shadow: 0 0 10px #ff00ff;
+  animation: glitch 0.5s infinite;
+}
+
+/* Навигация */
+nav {
+  margin: 20px 0;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+nav a {
+  margin: 0 10px;
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #666;
+}
+
+nav a:hover {
+  color: #007bff;
+}
+
+.active-link {
+  color: #00ff00 !important;
+  text-shadow: 0 0 10px #00ff00;
+}
+
+/* В App.css или MainLayout.css */
+.app-main {
+  padding-top: 70px; /* Хедер (70px) + Навигация (60px) + отступ */
+}
+
+@media (max-width: 768px) {
+  .app-main {
+    padding-top: 180px; /* Больше, т.к. навигация теперь колонка */
+  }
+}
+
+/* В глобальные стили или App.css */
+@media (max-width: 768px) {
+  #root {
+    padding: 10px;
+  }
+  
+  .app-container {
+    border: 2px solid var(--neon-blue);
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: calc(100vh - 20px);
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+  }
+}
+
+/* === РАМКА ДЛЯ МОБИЛЬНОЙ ВЕРСИИ === */
+@media (max-width: 768px) {
+  /* Обёртка для всего приложения */
+  .app-wrapper {
+    max-width: 100%;
+    margin: 0 auto;
+    border: 2px solid var(--neon-blue);
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: calc(100vh - 20px);
+    background: rgba(0, 0, 0, 0.95);
+    box-shadow: 
+      0 0 25px rgba(0, 255, 255, 0.2),
+      inset 0 0 15px rgba(0, 255, 255, 0.05);
+    position: relative;
+  }
+  
+  /* Декоративный уголок */
+  .app-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid var(--neon-pink);
+    border-right: 2px solid var(--neon-pink);
+    border-radius: 0 4px 0 0;
+    opacity: 0.7;
+  }
+  
+  /* Отступы внутри рамки */
+  .app-wrapper > * {
+    padding: 0 15px;
+  }
+  
+  /* Исключение для хедера - он должен быть на всю ширину внутри рамки */
+  .app-header {
+    border-radius: 14px 14px 0 0;
+    margin: 0;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+  .app-wrapper {
+    border-radius: 12px;
+    border-width: 1.5px;
+  }
+  
+  .app-wrapper::before {
+    width: 6px;
+    height: 6px;
+    top: 8px;
+    right: 8px;
+  }
+}
+
+/* Планшеты (портретная ориентация) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .app-wrapper {
+    max-width: 95%;
+    margin: 10px auto;
+  }
+}
+
+/* В App.css добавляем: */
+
+/* === РАМКА ДЛЯ МОБИЛЬНОЙ ВЕРСИИ === */
+@media (max-width: 768px) {
+  .app-wrapper {
+    max-width: 100%;
+    margin: 10px auto;
+    border: 2px solid var(--neon-blue);
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: calc(100vh - 20px);
+    background: rgba(0, 0, 0, 0.95);
+    box-shadow: 
+      0 0 25px rgba(0, 255, 255, 0.2),
+      inset 0 0 15px rgba(0, 255, 255, 0.05);
+    position: relative;
+  }
+  
+  /* Декоративный уголок */
+  .app-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid var(--neon-pink);
+    border-right: 2px solid var(--neon-pink);
+    border-radius: 0 4px 0 0;
+    opacity: 0.7;
+  }
+  
+  /* Отступы внутри рамки */
+  .app-wrapper > * {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  /* Контент не прилипает к краям */
+  .app-main {
+    padding: 15px;
+    padding-bottom: 20px;
+  }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+  .app-wrapper {
+    border-radius: 12px;
+    border-width: 1.5px;
+    margin: 5px auto;
+  }
+  
+  .app-wrapper::before {
+    width: 6px;
+    height: 6px;
+    top: 8px;
+    right: 8px;
+  }
+}
