@@ -9,6 +9,7 @@ interface Task {
     completed: boolean;
     userId: string; // 🔥 ДОБАВЛЯЕМ ПОЛЕ ДЛЯ ИЗОЛЯЦИИ
     createdAt: string; // Для сортировки
+    priority?: 'high' | 'medium' | 'low' | 'none';
 }
 
 interface TaskStore {

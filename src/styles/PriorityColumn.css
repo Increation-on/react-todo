@@ -1,0 +1,206 @@
+/* PriorityColumn.css - Киберпанк стиль для колонок приоритетов */
+
+/* === ОСНОВНЫЕ СТИЛИ КОЛОНКИ === */
+.priority-column {
+  border: 2px solid;
+  border-radius: 12px;
+  padding: 20px;
+  min-width: 280px;
+  background: rgba(0, 0, 0, 0.8);
+  min-height: 500px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Неоновое свечение при наведении */
+.priority-column:hover {
+  box-shadow: 0 0 25px;
+}
+
+/* === ЦВЕТА ПРИОРИТЕТОВ === */
+.priority-column.high {
+  border-color: #ff00ff;
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+}
+.priority-column.high:hover {
+  box-shadow: 0 0 25px rgba(255, 0, 255, 0.5);
+}
+
+.priority-column.medium {
+  border-color: #00ffff;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+.priority-column.medium:hover {
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.5);
+}
+
+.priority-column.low {
+  border-color: #00ff00;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+.priority-column.low:hover {
+  box-shadow: 0 0 25px rgba(0, 255, 0, 0.5);
+}
+
+.priority-column.none {
+  border-color: #747d8c;
+  box-shadow: 0 0 10px rgba(116, 125, 140, 0.3);
+}
+.priority-column.none:hover {
+  box-shadow: 0 0 20px rgba(116, 125, 140, 0.5);
+}
+
+/* === ЗАГОЛОВОК КОЛОНКИ === */
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.column-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Счётчик задач */
+.column-counter {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* === КАРТОЧКИ ЗАДАЧ === */
+.task-card {
+  background: rgba(42, 42, 58, 0.8);
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border-left: 4px solid;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Эффект при наведении на задачу */
+.task-card:hover {
+  transform: translateX(5px);
+  background: rgba(50, 50, 70, 0.9);
+}
+
+/* Минимальный глитч-эффект */
+.task-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.task-card:hover::before {
+  left: 100%;
+}
+
+/* Цвета левой границы карточек */
+.task-card.high {
+  border-left-color: #ff00ff;
+  box-shadow: inset 0 0 10px rgba(255, 0, 255, 0.1);
+}
+
+.task-card.medium {
+  border-left-color: #00ffff;
+  box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1);
+}
+
+.task-card.low {
+  border-left-color: #00ff00;
+  box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.1);
+}
+
+.task-card.none {
+  border-left-color: #747d8c;
+  box-shadow: inset 0 0 10px rgba(116, 125, 140, 0.1);
+}
+
+/* === ТЕКСТ ЗАДАЧИ === */
+.task-text {
+  color: #ffffff;
+  font-size: 1rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* === СООБЩЕНИЕ "НЕТ ЗАДАЧ" === */
+.column-empty {
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+  text-align: center;
+  padding: 40px 20px;
+  font-size: 0.95rem;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+/* === АДАПТИВНОСТЬ === */
+@media (max-width: 768px) {
+  .priority-column {
+    min-width: 260px;
+    padding: 15px;
+    min-height: 450px;
+  }
+  
+  .column-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .task-card {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+}
+
+/* Стили для перетаскивания */
+.task-card.dragging {
+  opacity: 0.7;
+  transform: scale(1.02);
+  box-shadow: 0 0 20px currentColor !important;
+  z-index: 1000;
+}
+
+/* Курсор при наведении на задачу */
+.task-card {
+  cursor: grab;
+}
+
+.task-card:active {
+  cursor: grabbing;
+}
+
+/* Эффект для зоны, куда можно бросить */
+.sortable-drop-zone {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 10px 0;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+}
