@@ -24,3 +24,5 @@ export type TaskOperation = 'create' | 'update' | 'delete' | 'toggle';
 
 // Тип для фильтрации задач
 export type TaskFilter = 'all' | 'active' | 'completed';
+
+export type Priority = 'high' | 'medium' | 'low' | 'none';

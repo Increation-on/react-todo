@@ -1,0 +1,104 @@
+/* TaskPriorityBoard.css - Стили для доски приоритетов */
+
+/* === ОСНОВНОЙ КОНТЕЙНЕР === */
+.priority-board {
+  display: flex;
+  gap: 25px;
+  padding: 25px;
+  overflow-x: auto;
+  min-height: calc(100vh - 200px);
+  background: rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+/* Полоска глитч-эффекта вверху */
+.priority-board::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    #ff00ff, 
+    #00ffff, 
+    #00ff00, 
+    transparent
+  );
+  animation: glitch 3s infinite;
+}
+
+/* Если у тебя уже есть анимация glitch в App.css, удали эту */
+@keyframes glitch {
+  0% { opacity: 0.8; transform: translateX(0); }
+  25% { opacity: 1; transform: translateX(-5px); }
+  50% { opacity: 0.9; transform: translateX(5px); }
+  75% { opacity: 1; transform: translateX(-3px); }
+  100% { opacity: 0.8; transform: translateX(0); }
+}
+
+/* === СОСТОЯНИЕ ПУСТОТЫ === */
+.board-empty {
+  padding: 60px 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.2rem;
+  border: 2px dashed rgba(0, 255, 255, 0.3);
+  border-radius: 16px;
+  margin: 40px auto;
+  max-width: 600px;
+  background: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+}
+
+.board-empty p {
+  margin: 0;
+  padding: 20px;
+  line-height: 1.5;
+}
+
+.board-loading {
+  padding: 60px 20px;
+  text-align: center;
+  color: rgba(0, 255, 255, 0.8);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1.2rem;
+}
+
+/* === СКРОЛЛБАР (необязательно, но красиво) === */
+.priority-board::-webkit-scrollbar {
+  height: 8px;
+}
+
+.priority-board::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+}
+
+.priority-board::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #ff00ff, #00ffff, #00ff00);
+  border-radius: 4px;
+}
+
+.priority-board::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #ff00ff, #00ffff, #00ff00);
+  opacity: 0.8;
+}
+
+/* === АДАПТИВНОСТЬ === */
+@media (max-width: 768px) {
+  .priority-board {
+    gap: 15px;
+    padding: 15px;
+    min-height: calc(100vh - 150px);
+  }
+  
+  .board-empty,
+  .board-loading {
+    margin: 20px;
+    padding: 40px 15px;
+    font-size: 1rem;
+  }
+}

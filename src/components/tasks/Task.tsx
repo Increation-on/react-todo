@@ -7,7 +7,8 @@ import './../../styles/Task.css'
 interface TaskItem {
     id: number | string,
     text: string,
-    completed: boolean
+    completed: boolean,
+    priority?: 'high' | 'medium' | 'low' | 'none';
 }
 
 interface TaskProps {

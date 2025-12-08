@@ -4,6 +4,7 @@ import RegisterPage from '../pages/RegisterPage.tsx';
 import TaskList from './../components/tasks/TaskList/TaskList.tsx';
 import ActiveTasks from '../pages/ActiveTasks.tsx';
 import CompletedTasks from '../pages/CompletedTasks.tsx';
+import TaskPriorityBoard from '../pages/TaskPriorityBoard/TaskPriorityBoard.tsx';
 
 export interface RouteItem {
   path: string;
@@ -46,7 +47,13 @@ export const routes: RouteItem[] = [
     component: CompletedTasks,
     isProtected: true,
     label: 'Completed'
-  }
+  },
+  {
+    path: '/priority',
+    component: TaskPriorityBoard,
+    isProtected: true,
+    label: 'Priority'
+  },
 ];
 
 // Вспомогательные функции
