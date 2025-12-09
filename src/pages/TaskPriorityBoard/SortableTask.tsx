@@ -9,9 +9,10 @@ interface SortableTaskProps {
     text: string;
     priority: Priority;
   };
+  index: number;
 }
 
-const SortableTask: React.FC<SortableTaskProps> = ({ task }) => {
+const SortableTask: React.FC<SortableTaskProps> = ({ task, index }) => {
   const {
     attributes,
     listeners,
@@ -24,7 +25,8 @@ const SortableTask: React.FC<SortableTaskProps> = ({ task }) => {
     data: {
       type: 'task',
       priority: task.priority,
-      task
+      taskId: task.id,
+      index: index
     }
   });
 
