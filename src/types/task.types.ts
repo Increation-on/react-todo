@@ -10,7 +10,7 @@ export interface BaseTask {
 }
 
 export interface Task extends BaseTask {
-  // Можно добавить дополнительные поля если нужно
+   priority: Priority;
 }
 
 export interface TaskListViewTask {
@@ -26,3 +26,7 @@ export type TaskOperation = 'create' | 'update' | 'delete' | 'toggle';
 export type TaskFilter = 'all' | 'active' | 'completed';
 
 export type Priority = 'high' | 'medium' | 'low' | 'none';
+
+export type TasksByPriority = {
+  [key in Priority]: Task[];
+};

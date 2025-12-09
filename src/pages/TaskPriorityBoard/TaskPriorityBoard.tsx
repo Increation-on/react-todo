@@ -1,79 +1,103 @@
-import React, { useState } from 'react';
-import { 
-  DndContext, 
-  DragEndEvent, 
-  DragStartEvent,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  closestCenter 
-} from '@dnd-kit/core';
-import { 
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy 
-} from '@dnd-kit/sortable';
+import React, { useCallback } from 'react';
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import PriorityColumn from './PriorityColumn.tsx';
-import {usePriorityTasks} from './../../hooks/tasks/usePriorityTasks.tsx'
+import { usePriorityTasks } from './../../hooks/tasks/usePriorityTasks.tsx';
+import { useTaskStore } from '../../store/TaskStore.tsx';
+import { useAuthStore } from '../../store/AuthStore.tsx';
+import { useTaskDnD } from '../../hooks/tasks/useTaskDnD.tsx';
 import './../../styles/TaskPriorityBoard.css';
+import { Priority } from '../../types/task.types.ts';
 
 const TaskPriorityBoard: React.FC = () => {
   const { tasksByPriority, total, isLoading } = usePriorityTasks();
-  const [activeId, setActiveId] = useState<string | null>(null);
+  
+  // Получаем методы из стора
+  const { reorderTasksInColumn, updateTaskPriority } = useTaskStore();
+  const getUserId = useAuthStore(state => state.getUserId);
+  
+  // Колбэк для сохранения в стор
+ const handleDragComplete = useCallback((result: any) => {
+    const userId = getUserId();
+    if (!userId) {
+      console.error('Пользователь не авторизован');
+      return;
+    }
+    
+    // Защита: проверяем что result существует
+    if (!result || !result.newTasks) {
+      console.error('Нет данных о задачах в результате DnD');
+      return;
+    }
+    
+    const { newTasks, changes } = result;
+    
+    console.log('💾 Сохранение DnD изменений в стор...');
+    console.log('🔍 ДЕТАЛИ:');
+    console.log('- userId:', userId);
+    console.log('- newTasks:', newTasks);
+    console.log('- changes:', changes);
+    
+    // 🔥 ПРОБЛЕМА: changes может быть undefined!
+    if (!changes) {
+      console.error('❌ changes отсутствует!');
+      return;
+    }
+    
+    // 1. Сначала обрабатываем изменение приоритетов (если есть)
+    if (changes.priorityChanges && Array.isArray(changes.priorityChanges)) {
+      console.log(`🔀 Найдено ${changes.priorityChanges.length} изменений приоритета`);
+      
+      changes.priorityChanges.forEach((change: any, index: number) => {
+        if (change && change.taskId && change.toPriority) {
+          console.log(`🚀 [${index}] Задача ${change.taskId}: ${change.fromPriority} → ${change.toPriority}`);
+          
+          // 🔥 ВЫЗЫВАЕМ updateTaskPriority
+          updateTaskPriority(
+            change.taskId, 
+            change.toPriority, 
+            change.newOrderIndex || 0
+          );
+        }
+      });
+    }
+    
+    // 2. Потом пересортировываем колонки
+    if (changes.reorderedColumns && Array.isArray(changes.reorderedColumns)) {
+      console.log(`📊 Пересортировка колонок: ${changes.reorderedColumns.join(', ')}`);
+      
+      changes.reorderedColumns.forEach((priority: Priority) => {
+        const columnTasks = newTasks[priority];
+        if (columnTasks && columnTasks.length > 0) {
+          const taskIdsInOrder = columnTasks.map((task: any) => task.id);
+          console.log(`📝 Колонка ${priority}: ${taskIdsInOrder.length} задач`);
+          
+          // 🔥 ВЫЗЫВАЕМ reorderTasksInColumn
+          reorderTasksInColumn(priority, taskIdsInOrder);
+        }
+      });
+    }
+    
+    console.log('✅ Изменения отправлены в стор');
+}, [reorderTasksInColumn, updateTaskPriority, getUserId]);
 
-  // Настройка сенсоров для мыши
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8, // Минимальное расстояние для начала drag
-      },
-    })
-  );
-
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
-  };
-
-  const handleDragEnd = (event: DragEndEvent) => {
-  const { active, over } = event;
-  console.log('🎯 Drag ENDED:', { 
-    active: active.id, 
-    over: over?.id,
-    activeData: active.data.current,
-    overData: over?.data.current
+  // Используем хук с колбэком
+  const {
+    orderedTasks,
+    dragOverColumn,
+    sensors,
+    handleDragStart,
+    handleDragMove,
+    handleDragEnd,
+    handleDragCancel,
+    DragOverlay
+  } = useTaskDnD({
+    initialTasks: tasksByPriority,
+    onDragComplete: handleDragComplete
   });
-  setActiveId(null);
 
-  if (!over) {
-    console.log('❌ Ничего под курсором');
-    return;
-  }
-
-  if (active.id !== over.id) {
-    console.log('✅ Задача перемещена с', active.id, 'на', over.id);
-    
-    // ВРЕМЕННО: просто алерт
-    alert(`Задача ${active.id} перемещена на позицию ${over.id}\nЗавтра добавим сохранение в стор!`);
-    
-    // ЗАВТРА здесь будет:
-    // 1. Найти задачу в сторе
-    // 2. Обновить её порядок
-    // 3. Сохранить в стор
-    // 4. Компонент перерендерится с новым порядком
-  }
-};
-
-  if (isLoading) {
-    return <div className="board-loading">Загрузка...</div>;
-  }
-
-  if (total === 0) {
-    return (
-      <div className="board-empty">
-        <p>Нет задач. Создайте первую задачу в колонке "Без приоритета"</p>
-      </div>
-    );
-  }
+  if (isLoading) return <div className="board-loading">Загрузка...</div>;
+  if (total === 0) return <div className="board-empty">Нет задач...</div>;
 
   return (
     <DndContext
@@ -81,21 +105,26 @@ const TaskPriorityBoard: React.FC = () => {
       collisionDetection={closestCenter}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      onDragMove={handleDragMove}
+      onDragCancel={handleDragCancel}
     >
       <div className="priority-board">
         {(['high', 'medium', 'low', 'none'] as const).map((priority) => (
           <SortableContext
             key={priority}
-            items={tasksByPriority[priority].map(t => t.id.toString())}
+            items={orderedTasks[priority]?.map(t => t.id.toString()) || []}
             strategy={verticalListSortingStrategy}
           >
-            <PriorityColumn 
-              priority={priority} 
-              tasks={tasksByPriority[priority]} 
+            <PriorityColumn
+              priority={priority}
+              tasks={orderedTasks[priority] || []}
+              isDragOver={dragOverColumn === priority}
             />
           </SortableContext>
         ))}
       </div>
+      
+      <DragOverlay />
     </DndContext>
   );
 };
