@@ -1,31 +1,42 @@
 // components/TaskList.tsx
+import { useMemo } from 'react'; // <-- Добавляем useMemo
 import { useAuthStore } from "../../../store/AuthStore.tsx";
 import { useTaskStore } from "../../../store/TaskStore.tsx";
 import { useTasksAPI } from "../../../hooks/api/useTasksAPI.tsx";
 import {useTaskOperations} from '../../../hooks/tasks/useTaskOperations.tsx'
 import { useTaskSearch } from "../../../hooks/tasks/useTaskSearch.tsx";
 import { useTaskNotifications } from "../../../hooks/ui/useTaskNotification.tsx";
-
 import TaskListHeader from "./TaskListHeader.tsx";
 import TaskListView from "./TaskListView.tsx";
 import AddTask from "../AddTask.tsx";
 import Search from './../../../ui/Search.tsx'
+import { usePriorityTasks } from '../../../hooks/tasks/usePriorityTasks.tsx';
 import './../../../styles/TaskList.css'
 
 const TaskList: React.FC = () => {
-  // Базовые данные
   const userId = useAuthStore(state => state.getUserId());
-  const getUserTasks = useTaskStore(state => state.getUserTasks);
-  const tasks = getUserTasks(userId);
   const addTask = useTaskStore(state => state.addTask);
-
+  const { sortedTasks, isLoadingPriorirty } = usePriorityTasks();
+  // 🔥 ПОЛУЧАЕМ ВСЕ ЗАДАЧИ РЕАКТИВНО
+  const allTasks = useTaskStore(state => state.tasks);
+  
+  // 🔥 ФИЛЬТРУЕМ И СОРТИРУЕМ В КОМПОНЕНТЕ
+  const userTasks = useMemo(() => {
+    if (!userId) return [];
+    return allTasks
+      .filter(task => task.userId === userId)
+      .sort((a, b) => a.orderIndex - b.orderIndex);
+  }, [allTasks, userId]);
+  
+  console.log('📋 [TaskList] userTasks:', userTasks.length);
+  
   // Хуки для операций
   const taskNotify = useTaskNotifications();
   const { handleToggle, handleDelete } = useTaskOperations();
-  const search = useTaskSearch(tasks);
   
-  // API загрузка
-  const { loadTasksFromAPI, isLoading } = useTasksAPI(tasks);
+  // 🔥 ПЕРЕДАЕМ sortedTasks
+  const search = useTaskSearch(sortedTasks);
+  const { loadTasksFromAPI, isLoading } = useTasksAPI(sortedTasks);
 
   // Обработчики
   const handleLoadFromAPI = async (): Promise<void> => {
@@ -54,7 +65,7 @@ const TaskList: React.FC = () => {
   };
 
   const handleDeleteWithSearch = (taskId: string | number): void => {
-    const task = tasks.find(t => t.id === taskId);
+    const task = sortedTasks.find(t => t.id === taskId); // <-- Используем sortedTasks
     if (!task) return;
 
     handleDelete(task, {
@@ -72,7 +83,7 @@ const TaskList: React.FC = () => {
   return (
     <div className="task-list-container">
       <TaskListHeader 
-        isLoading={isLoading}
+        isLoading={isLoading || isLoadingPriorirty} // <-- Добавляем isLoadingPriority
         onLoadFromAPI={handleLoadFromAPI}
       />
       
@@ -94,7 +105,7 @@ const TaskList: React.FC = () => {
       <TaskListView 
         tasks={search.tasksToShow}
         onToggle={(id) => {
-          const task = tasks.find(t => t.id === id);
+          const task = sortedTasks.find(t => t.id === id); // <-- Используем sortedTasks
           if (task) handleToggle(task);
         }}
         onDelete={handleDeleteWithSearch}

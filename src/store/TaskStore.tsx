@@ -17,19 +17,19 @@ interface Task {
 
 interface TaskStore {
     tasks: Task[];
-    
+
     // 🔥 НОВЫЕ МЕТОДЫ ДЛЯ DnD
     reorderTasksInColumn: (
-        priority: Priority, 
+        priority: Priority,
         newOrder: (string | number)[]
     ) => void;
-    
+
     updateTaskPriority: (
-        taskId: string | number, 
-        newPriority: Priority, 
+        taskId: string | number,
+        newPriority: Priority,
         newOrderIndex?: number
     ) => void;
-    
+
     // Существующие методы
     getUserTasks: (userId: string | null) => Task[];
     addTask: (text: string) => void;
@@ -60,7 +60,7 @@ export const useTaskStore = create<TaskStore>()(
                     const userTasksInColumn = state.tasks.filter(
                         task => task.userId === userId && task.priority === priority
                     );
-                    
+
                     const otherTasks = state.tasks.filter(
                         task => !(task.userId === userId && task.priority === priority)
                     );
@@ -91,7 +91,7 @@ export const useTaskStore = create<TaskStore>()(
                         tasks: [...otherTasks, ...reorderedTasks]
                     };
                 });
-                
+
                 console.log(`🔄 Колонка ${priority} пересортирована`);
             },
 
@@ -108,14 +108,14 @@ export const useTaskStore = create<TaskStore>()(
                     const taskIndex = state.tasks.findIndex(
                         t => t.id === taskId && t.userId === userId
                     );
-                    
+
                     if (taskIndex === -1) {
                         console.error(`Задача ${taskId} не найдена или нет доступа`);
                         return state;
                     }
 
                     const task = state.tasks[taskIndex];
-                    
+
                     // 2. Если приоритет не меняется, просто обновляем orderIndex
                     if (task.priority === newPriority) {
                         const updatedTasks = [...state.tasks];
@@ -138,7 +138,7 @@ export const useTaskStore = create<TaskStore>()(
 
                     return { tasks: updatedTasks };
                 });
-                
+
                 console.log(`🚀 Задача ${taskId} перемещена в ${newPriority} на позицию ${newOrderIndex}`);
             },
 
@@ -158,15 +158,16 @@ export const useTaskStore = create<TaskStore>()(
                     return;
                 }
 
-                // Находим задачи пользователя в колонке 'none'
-                const userNoneTasks = get().tasks.filter(
-                    task => task.userId === userId && task.priority === 'none'
-                );
+                // 🔥 ИСПРАВЛЕНИЕ: Всю логику внутри set
+                set(state => {
+                    // Находим задачи пользователя в колонке 'none' ИЗ ТЕКУЩЕГО СОСТОЯНИЯ
+                    const userNoneTasks = state.tasks.filter(
+                        task => task.userId === userId && task.priority === 'none'
+                    );
 
-                const nextOrderIndex = userNoneTasks.length;
+                    const nextOrderIndex = userNoneTasks.length;
 
-                set(state => ({
-                    tasks: [...state.tasks, {
+                    const newTask: Task = {
                         id: Date.now() + Math.random(),
                         text: text.trim(),
                         completed: false,
@@ -174,10 +175,14 @@ export const useTaskStore = create<TaskStore>()(
                         createdAt: new Date().toISOString(),
                         priority: 'none',
                         orderIndex: nextOrderIndex
-                    }]
-                }));
-                
-                console.log(`✅ Задача добавлена в колонку "none" на позицию ${nextOrderIndex}`);
+                    };
+
+                    console.log(`✅ Добавляем задачу:`, newTask);
+
+                    return {
+                        tasks: [...state.tasks, newTask]
+                    };
+                });
             },
 
             // 🔥 ПЕРЕКЛЮЧЕНИЕ СТАТУСА
@@ -228,17 +233,17 @@ export const useTaskStore = create<TaskStore>()(
             updateTaskText: (id, newText) => {
                 const userId = useAuthStore.getState().getUserId();
                 const trimmedText = newText.trim();
-                
+
                 if (!trimmedText) {
                     console.warn('Попытка обновить задачу пустым текстом');
                     return;
                 }
-                
+
                 if (!userId) {
                     console.error('Нельзя обновить задачу: пользователь не авторизован');
                     return;
                 }
-                
+
                 set(state => ({
                     tasks: state.tasks.map(task =>
                         task.id === id && task.userId === userId
@@ -256,57 +261,40 @@ export const useTaskStore = create<TaskStore>()(
         // 🎯 PERSIST CONFIG
         {
             name: 'tasks-storage',
-            version: 1, // Увеличиваем версию для миграции
-            
+            version: 2, // Увеличиваем версию для миграции
+
             migrate: (persistedState: any, version: number) => {
-                console.log('🔧 Запуск миграции задач, версия:', version);
-                
-                if (!persistedState || !persistedState.tasks) {
-                    return persistedState;
-                }
+                console.log(`🔧 Миграция с версии ${version} до 2`);
 
-                // 1. Добавляем userId если нет (старая миграция)
-                const hasUserId = persistedState.tasks[0]?.userId !== undefined;
-                if (!hasUserId) {
-                    console.log('🔧 Миграция: добавляем userId');
-                    persistedState.tasks = persistedState.tasks.map((task: any) => ({
-                        ...task,
-                        userId: 'legacy_user'
-                    }));
-                }
+                // Для версии 0 или 1 делаем полную миграцию
+                if (version < 2) {
+                    console.log('🔧 Принудительная миграция для старых версий');
 
-                // 2. Добавляем priority и orderIndex если нет
-                const hasPriority = persistedState.tasks[0]?.priority !== undefined;
-                const hasOrderIndex = persistedState.tasks[0]?.orderIndex !== undefined;
-                
-                if (!hasPriority || !hasOrderIndex) {
-                    console.log('🔧 Миграция: добавляем priority и orderIndex');
-                    
-                    // Группируем для подсчета orderIndex
+                    if (!persistedState || !persistedState.tasks) {
+                        return { tasks: [] }; // Возвращаем пустой стор
+                    }
+
+                    // Полная перезапись всех задач с правильными полями
                     const orderCounters: Record<string, number> = {};
-                    
+
                     persistedState.tasks = persistedState.tasks.map((task: any) => {
                         const userId = task.userId || 'legacy_user';
                         const priority = task.priority || 'none';
                         const counterKey = `${userId}_${priority}`;
-                        
+
                         if (!orderCounters[counterKey]) {
                             orderCounters[counterKey] = 0;
                         }
-                        
-                        const orderIndex = orderCounters[counterKey];
-                        orderCounters[counterKey] += 1;
-                        
+
                         return {
                             ...task,
+                            userId: userId,
                             priority: priority,
-                            orderIndex: orderIndex,
-                            userId: userId
+                            orderIndex: orderCounters[counterKey]++
                         };
                     });
                 }
-                
-                console.log('✅ Миграция завершена');
+
                 return persistedState;
             }
         }
