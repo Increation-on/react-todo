@@ -2,8 +2,9 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useSearch } from '../ui/useSearch.tsx';
 import { BaseTask } from '../../types/task.types.ts';
+import {  Task } from '../../types/task.types.ts';
 
-export const useTaskSearch = (tasks: BaseTask[]) => {
+export const useTaskSearch = (tasks: Task[]) => {
   const {
     query,
     setQuery,
@@ -30,7 +31,8 @@ export const useTaskSearch = (tasks: BaseTask[]) => {
   const tasksForView = tasksToShow.map(task => ({
     id: task.id,
     text: task.text,
-    completed: task.completed
+    completed: task.completed,
+    priority: task.priority
   }));
 
   const handleInputChange = useCallback((value: string): void => {

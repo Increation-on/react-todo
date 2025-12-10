@@ -281,3 +281,52 @@
     justify-content: center;
   }
 }
+
+/* styles/Task.css (добавляем в конец файла) */
+
+.task-priority {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-right: 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+  box-shadow: 0 0 5px currentColor;
+  transition: all 0.2s ease;
+}
+
+/* Киберпанк-стили для приоритетов */
+.task-priority--high {
+  color: #ff00ff; /* Неоново-розовый */
+  border-color: #ff00ff;
+  background: rgba(255, 0, 255, 0.1);
+  text-shadow: 0 0 8px rgba(255, 0, 255, 0.7);
+}
+
+.task-priority--medium {
+  color: #ffaa00; /* Неоново-оранжевый */
+  border-color: #ffaa00;
+  background: rgba(255, 170, 0, 0.1);
+  text-shadow: 0 0 8px rgba(255, 170, 0, 0.7);
+}
+
+.task-priority--low {
+  color: #00ffaa; /* Неоново-бирюзовый */
+  border-color: #00ffaa;
+  background: rgba(0, 255, 170, 0.1);
+  text-shadow: 0 0 8px rgba(0, 255, 170, 0.7);
+}
+
+/* Скрываем бейдж для none */
+.task-priority--none {
+  display: none;
+}
+
+/* Анимация при наведении */
+.task:hover .task-priority {
+  transform: translateY(-1px);
+  box-shadow: 0 0 10px currentColor;
+}

@@ -6,11 +6,12 @@ import { usePriorityTasks } from './../../hooks/tasks/usePriorityTasks.tsx';
 import { useTaskStore } from '../../store/TaskStore.tsx';
 import { useAuthStore } from '../../store/AuthStore.tsx';
 import { useTaskDnD } from '../../hooks/tasks/useTaskDnD.tsx';
+import { TaskDragOverlay } from './TaskDragOverlay.tsx';
 import './../../styles/TaskPriorityBoard.css';
 import { Priority } from '../../types/task.types.ts';
 
 const TaskPriorityBoard: React.FC = () => {
-  const { tasksByPriority, total, isLoading } = usePriorityTasks();
+  const { tasksByPriority, total, isLoadingPriorirty } = usePriorityTasks();
   
   // Получаем методы из стора
   const { reorderTasksInColumn, updateTaskPriority } = useTaskStore();
@@ -31,14 +32,7 @@ const TaskPriorityBoard: React.FC = () => {
     }
     
     const { newTasks, changes } = result;
-    
-    console.log('💾 Сохранение DnD изменений в стор...');
-    console.log('🔍 ДЕТАЛИ:');
-    console.log('- userId:', userId);
-    console.log('- newTasks:', newTasks);
-    console.log('- changes:', changes);
-    
-    // 🔥 ПРОБЛЕМА: changes может быть undefined!
+  
     if (!changes) {
       console.error('❌ changes отсутствует!');
       return;
@@ -46,11 +40,11 @@ const TaskPriorityBoard: React.FC = () => {
     
     // 1. Сначала обрабатываем изменение приоритетов (если есть)
     if (changes.priorityChanges && Array.isArray(changes.priorityChanges)) {
-      console.log(`🔀 Найдено ${changes.priorityChanges.length} изменений приоритета`);
+     
       
       changes.priorityChanges.forEach((change: any, index: number) => {
         if (change && change.taskId && change.toPriority) {
-          console.log(`🚀 [${index}] Задача ${change.taskId}: ${change.fromPriority} → ${change.toPriority}`);
+        
           
           // 🔥 ВЫЗЫВАЕМ updateTaskPriority
           updateTaskPriority(
@@ -81,7 +75,7 @@ const TaskPriorityBoard: React.FC = () => {
     console.log('✅ Изменения отправлены в стор');
 }, [reorderTasksInColumn, updateTaskPriority, getUserId]);
 
-  // Используем хук с колбэком
+  // Используем хук с колбэком (теперь без DragOverlay)
   const {
     orderedTasks,
     dragOverColumn,
@@ -90,13 +84,13 @@ const TaskPriorityBoard: React.FC = () => {
     handleDragMove,
     handleDragEnd,
     handleDragCancel,
-    DragOverlay
+    activeTask // 🔥 Получаем activeTask из хука
   } = useTaskDnD({
     initialTasks: tasksByPriority,
     onDragComplete: handleDragComplete
   });
 
-  if (isLoading) return <div className="board-loading">Загрузка...</div>;
+  if (isLoadingPriorirty) return <div className="board-loading">Загрузка...</div>;
   if (total === 0) return <div className="board-empty">Нет задач...</div>;
 
   return (
@@ -124,7 +118,8 @@ const TaskPriorityBoard: React.FC = () => {
         ))}
       </div>
       
-      <DragOverlay />
+      {/* 🔥 Используем отдельный компонент DragOverlay */}
+      <TaskDragOverlay activeTask={activeTask} />
     </DndContext>
   );
 };

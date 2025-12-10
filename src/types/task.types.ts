@@ -17,6 +17,7 @@ export interface TaskListViewTask {
   id: string | number;
   text: string;
   completed: boolean;
+   priority: 'high' | 'medium' | 'low' | 'none';
 }
 
 // Тип для операций с задачами

@@ -1,0 +1,60 @@
+/* components/DragOverlay/TaskDragOverlay.css */
+.task-drag-overlay {
+  padding: 12px;
+  background: #1a1a2e;
+  border: 2px solid #0ff;
+  border-radius: 8px;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+  opacity: 0.85;
+  transform: rotate(2deg);
+  max-width: 250px;
+  word-break: break-word;
+  animation: pulse 2s infinite;
+}
+
+.task-drag-overlay__text {
+  color: #fff;
+  font-size: 14px;
+  text-shadow: 0 0 5px #0ff;
+  margin: 0;
+}
+
+.task-drag-overlay__priority {
+  font-size: 12px;
+  color: #0ff;
+  margin-top: 4px;
+  opacity: 0.8;
+}
+
+/* Киберпанк анимация */
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+    border-color: #0ff;
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(0, 255, 255, 0.9);
+    border-color: #f0f;
+  }
+}
+
+/* Цвета для разных приоритетов */
+.task-drag-overlay--high .task-drag-overlay__priority {
+  color: #ff00ff;
+  text-shadow: 0 0 8px rgba(255, 0, 255, 0.7);
+}
+
+.task-drag-overlay--medium .task-drag-overlay__priority {
+  color: #ffaa00;
+  text-shadow: 0 0 8px rgba(255, 170, 0, 0.7);
+}
+
+.task-drag-overlay--low .task-drag-overlay__priority {
+  color: #00ffaa;
+  text-shadow: 0 0 8px rgba(0, 255, 170, 0.7);
+}
+
+.task-drag-overlay--none .task-drag-overlay__priority {
+  color: #888;
+  text-shadow: none;
+}

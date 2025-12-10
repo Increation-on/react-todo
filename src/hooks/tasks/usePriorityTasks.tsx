@@ -1,3 +1,4 @@
+// hooks/tasks/usePriorityTasks.tsx
 import { useMemo } from 'react';
 import { useTaskStore } from '../../store/TaskStore.tsx';
 import { useAuthStore } from '../../store/AuthStore.tsx';
@@ -5,45 +6,47 @@ import { useAuthStore } from '../../store/AuthStore.tsx';
 type Priority = 'high' | 'medium' | 'low' | 'none';
 
 export const usePriorityTasks = () => {
-  const userId = useAuthStore((state) => state.getUserId());
-  const allTasks = useTaskStore((state) => state.tasks);
-
-  // 1. Задачи текущего пользователя
+  const userId = useAuthStore(state => state.getUserId());
+  const allTasks = useTaskStore(state => state.tasks);
+  
+  // 1. Базовые задачи пользователя (уже отсортированы по orderIndex для DnD)
   const userTasks = useMemo(() => {
     if (!userId) return [];
-    return allTasks.filter(task => task.userId === userId);
+    return allTasks
+      .filter(task => task.userId === userId)
+      .sort((a, b) => a.orderIndex - b.orderIndex);
   }, [allTasks, userId]);
-
-  // 2. Добавляем priority по умолчанию
-  const tasksWithPriority = useMemo(() => 
-    userTasks.map(task => ({
-      ...task,
-      priority: (task as any).priority || 'none' as Priority,
-    })), 
-    [userTasks]
-  );
-
-  // 3. Группируем по приоритетам
+  
+  // 2. Для TaskList: плоский список, отсортированный по приоритету
+  const sortedTasks = useMemo(() => {
+    const priorityOrder = { high: 0, medium: 1, low: 2, none: 3 };
+    return [...userTasks].sort((a, b) => 
+      priorityOrder[a.priority] - priorityOrder[b.priority]
+    );
+  }, [userTasks]);
+  
+  // 3. Для TaskPriorityBoard: сгруппированные по приоритету
   const tasksByPriority = useMemo(() => {
-    const result: Record<Priority, typeof tasksWithPriority> = {
-      high: [],
-      medium: [],
-      low: [],
-      none: [],
+    const result: Record<Priority, typeof userTasks> = {
+      high: [], medium: [], low: [], none: []
     };
-    
-    tasksWithPriority.forEach(task => {
-      const priority = task.priority as Priority;
+    userTasks.forEach(task => {
+      const priority = task.priority || 'none';
       result[priority].push(task);
     });
-    
     return result;
-  }, [tasksWithPriority]);
-
+  }, [userTasks]);
+  
   return {
-    tasks: tasksWithPriority,
-    tasksByPriority,
-    total: tasksWithPriority.length,
-    isLoading: !userId,
+    // Общее
+    tasks: userTasks,
+    total: userTasks.length,
+    isLoadingPriorirty: !userId,
+    
+    // Для TaskList
+    sortedTasks,
+    
+    // Для TaskPriorityBoard
+    tasksByPriority
   };
 };
