@@ -20,7 +20,7 @@ export const TaskDragOverlay: React.FC<TaskDragOverlayProps> = ({ activeTask }) 
           {activeTask.text}
         </div>
         <div className="task-drag-overlay__priority">
-          Приоритет: {activeTask.priority}
+          Priority: {activeTask.priority}
         </div>
       </div>
     </DndDragOverlay>

@@ -1,6 +1,4 @@
-/* src/styles/App.css */
-
-/* Глобальные стили */
+/* === ГЛОБАЛЬНЫЕ СТИЛИ === */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -14,24 +12,12 @@ body {
 }
 
 @keyframes glitch {
-  0% {
-    transform: translate(0)
-  }
-  20% {
-    transform: translate(-2px, 2px)
-  }
-  40% {
-    transform: translate(-2px, -2px)
-  }
-  60% {
-    transform: translate(2px, 2px)
-  }
-  80% {
-    transform: translate(2px, -2px)
-  }
-  100% {
-    transform: translate(0)
-  }
+  0% { transform: translate(0) }
+  20% { transform: translate(-2px, 2px) }
+  40% { transform: translate(-2px, -2px) }
+  60% { transform: translate(2px, 2px) }
+  80% { transform: translate(2px, -2px) }
+  100% { transform: translate(0) }
 }
 
 :root {
@@ -42,81 +28,35 @@ body {
   --text-color: #ffffff;
 }
 
-/* Стили компонента App */
-.App {
-  text-align: center;
-  background-color: #000000;
-  border: 2px solid #00ff00;
-  position: relative;
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
+/* === СКРЫТИЕ HEADER ПРИ STICKY === */
+.header-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.2s ease;
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
 }
 
-h1 {
-  color: #ff00ff;
-  text-shadow: 0 0 10px #ff00ff;
-  animation: glitch 0.5s infinite;
-}
-
-/* Навигация */
-nav {
-  margin: 20px 0;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-}
-
-nav a {
-  margin: 0 10px;
-  padding: 5px 10px;
-  text-decoration: none;
-  color: #666;
-}
-
-nav a:hover {
-  color: #007bff;
-}
-
-.active-link {
-  color: #00ff00 !important;
-  text-shadow: 0 0 10px #00ff00;
-}
-
-/* В App.css или MainLayout.css */
+/* === ОСНОВНОЙ КОНТЕНТ (ДЕСКТОП) === */
 .app-main {
-  padding-top: 70px; /* Хедер (70px) + Навигация (60px) + отступ */
+  padding-top: 30px !important;
+  min-height: calc(100vh - 30px);
+  width: 100%;
+  transition: padding-top 0.3s ease;
 }
 
-@media (max-width: 768px) {
-  .app-main {
-    padding-top: 180px; /* Больше, т.к. навигация теперь колонка */
-  }
+/* Когда header скрыт (sticky режим на десктопе) */
+.header-hidden ~ .app-navigation-wrapper.sticky ~ .app-main {
+  padding-top: 250px !important;
 }
 
-/* В глобальные стили или App.css */
+/* === МОБИЛЬНАЯ ВЕРСИЯ (ОДИН медиазапрос) === */
 @media (max-width: 768px) {
-  #root {
-    padding: 10px;
-  }
-  
-  .app-container {
-    border: 2px solid var(--neon-blue);
-    border-radius: 16px;
-    overflow: hidden;
-    min-height: calc(100vh - 20px);
-    background: rgba(0, 0, 0, 0.9);
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
-  }
-}
-
-/* === РАМКА ДЛЯ МОБИЛЬНОЙ ВЕРСИИ === */
-@media (max-width: 768px) {
-  /* Обёртка для всего приложения */
+  /* Обёртка для мобильной рамки */
   .app-wrapper {
     max-width: 100%;
-    margin: 0 auto;
-    border: 2px solid var(--neon-blue);
-    border-radius: 16px;
+    margin: 10px auto;
     overflow: hidden;
     min-height: calc(100vh - 20px);
     background: rgba(0, 0, 0, 0.95);
@@ -126,7 +66,6 @@ nav a:hover {
     position: relative;
   }
   
-  /* Декоративный уголок */
   .app-wrapper::before {
     content: '';
     position: absolute;
@@ -140,85 +79,25 @@ nav a:hover {
     opacity: 0.7;
   }
   
-  /* Отступы внутри рамки */
   .app-wrapper > * {
-    padding: 0 15px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   
-  /* Исключение для хедера - он должен быть на всю ширину внутри рамки */
   .app-header {
-    border-radius: 14px 14px 0 0;
-    margin: 0;
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-}
-
-/* Очень маленькие экраны */
-@media (max-width: 480px) {
-  .app-wrapper {
-    border-radius: 12px;
-    border-width: 1.5px;
+    display: none !important;
   }
   
-  .app-wrapper::before {
-    width: 6px;
-    height: 6px;
-    top: 8px;
-    right: 8px;
-  }
-}
-
-/* Планшеты (портретная ориентация) */
-@media (min-width: 481px) and (max-width: 768px) {
-  .app-wrapper {
-    max-width: 95%;
-    margin: 10px auto;
-  }
-}
-
-/* В App.css добавляем: */
-
-/* === РАМКА ДЛЯ МОБИЛЬНОЙ ВЕРСИИ === */
-@media (max-width: 768px) {
-  .app-wrapper {
-    max-width: 100%;
-    margin: 10px auto;
-    border: 2px solid var(--neon-blue);
-    border-radius: 16px;
-    overflow: hidden;
-    min-height: calc(100vh - 20px);
-    background: rgba(0, 0, 0, 0.95);
-    box-shadow: 
-      0 0 25px rgba(0, 255, 255, 0.2),
-      inset 0 0 15px rgba(0, 255, 255, 0.05);
-    position: relative;
-  }
-  
-  /* Декоративный уголок */
-  .app-wrapper::before {
-    content: '';
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 8px;
-    height: 8px;
-    border-top: 2px solid var(--neon-pink);
-    border-right: 2px solid var(--neon-pink);
-    border-radius: 0 4px 0 0;
-    opacity: 0.7;
-  }
-  
-  /* Отступы внутри рамки */
-  .app-wrapper > * {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-  
-  /* Контент не прилипает к краям */
+  /* Основной контент на мобилках */
   .app-main {
-    padding: 15px;
-    padding-bottom: 20px;
+    padding: 15px !important;
+    padding-top: 70px !important; /* ЕДИНСТВЕННОЕ значение */
+    padding-bottom: 20px !important;
+    transition: padding-top 0.3s ease; /* Оставляем transition */
+  }
+  
+  .header-hidden {
+    display: none !important;
   }
 }
 

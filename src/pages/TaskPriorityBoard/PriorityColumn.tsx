@@ -1,28 +1,34 @@
-// PriorityColumn.tsx
 import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
-import { Priority } from './../../types/task.types.ts'
+import { Priority } from './../../types/task.types.ts';
 import SortableTask from './SortableTask.tsx';
-import './../../styles/PriorityColumn.css'
+import './../../styles/PriorityColumn.css';
 
 interface PriorityColumnProps {
   priority: Priority;
   tasks: any[];
-   isDragOver?: boolean;
+  isDragOver?: boolean;
+  isMobile?: boolean;
+  onMoveTask?: (taskId: string | number, newPriority: Priority) => void; // 🆕 Добавляем
 }
 
 const getPriorityLabel = (priority: Priority): string => {
   const labels = {
-    high: '🔥 ВЫСОКИЙ',
-    medium: '⚡ СРЕДНИЙ',
-    low: '🌱 НИЗКИЙ',
-    none: '📋 БЕЗ ПРИОРИТЕТА',
+    high: '🔥 HIGH',
+    medium: '⚡ MEDIUM',
+    low: '🌱 LOW',
+    none: '📋 NON-PRIORITY',
   };
   return labels[priority];
 };
 
-const PriorityColumn: React.FC<PriorityColumnProps> = ({ priority, tasks,  isDragOver = false  }) => {
-  // 🔥 СОЗДАЕМ ОТДЕЛЬНЫЙ DROPPABLE ДЛЯ ПУСТОЙ ОБЛАСТИ
+const PriorityColumn: React.FC<PriorityColumnProps> = ({ 
+  priority, 
+  tasks, 
+  isDragOver = false,
+  isMobile = false,
+  onMoveTask // 🆕 Получаем
+}) => {
   const { setNodeRef, isOver } = useDroppable({
     id: `column-drop-${priority}`,
     data: {
@@ -32,7 +38,6 @@ const PriorityColumn: React.FC<PriorityColumnProps> = ({ priority, tasks,  isDra
     }
   });
 
-  
   return (
     <div className={`priority-column ${priority} ${isDragOver ? 'column-drag-over' : ''}`}>
       <div className="column-header">
@@ -40,7 +45,6 @@ const PriorityColumn: React.FC<PriorityColumnProps> = ({ priority, tasks,  isDra
         <span className="column-counter">{tasks.length}</span>
       </div>
       
-      {/* 🔥 ЭТОТ DIV БУДЕТ ПРИНИМАТЬ ЗАДАЧИ В ПУСТУЮ ОБЛАСТЬ */}
       <div 
         ref={setNodeRef}
         className={`column-drop-zone ${isOver ? 'column-drag-over' : ''}`}
@@ -50,11 +54,16 @@ const PriorityColumn: React.FC<PriorityColumnProps> = ({ priority, tasks,  isDra
         }}
       >
         {tasks.length === 0 ? (
-          <p className="column-empty">ПОКА НЕТ ЗАДАЧ</p>
+          <p className="column-empty">Tasks field is empty...</p>
         ) : (
-          // 🔥 ЗАДАЧИ РЕНДЕРЯТСЯ КАК ОБЫЧНО
           tasks.map((task, index) => (
-            <SortableTask key={task.id} task={task} index={index} />
+            <SortableTask 
+              key={task.id} 
+              task={task} 
+              index={index} 
+              isMobile={isMobile}
+              onPriorityChange={onMoveTask} // 🆕 Передаем дальше
+            />
           ))
         )}
       </div>
