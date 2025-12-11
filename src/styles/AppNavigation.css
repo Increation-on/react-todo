@@ -1,32 +1,104 @@
-/* src/components/layout/styles/AppNavigation.css */
-
-/* === ОБЩИЕ СТИЛИ (Desktop - fixed сверху) === */
-.app-navigation {
+/* === ОСНОВНОЙ КОНТЕЙНЕР (десктоп) === */
+.app-navigation-wrapper {
+  position: sticky;
+  top: 130px;
+  left: 0;
+  z-index: 1000;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 30px;
-  padding: 10px;
-  height: 60px;
-  align-items: center;
+  height: 115px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: rgba(0, 0, 0, 0.95);
+  border-right: 2px solid var(--neon-green);
   border-bottom: 2px solid var(--neon-green);
-  z-index: 800;
+  overflow: hidden;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 255, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 255, 0, 0.2);
+}
+
+.app-navigation-wrapper.collapsed {
+  width: 30px;
+  opacity: 0.9;
+}
+
+.app-navigation-wrapper.expanded {
+  width: 100%;
+  opacity: 1;
+}
+
+/* === КНОПКА И КОНТЕНТ (общее) === */
+.nav-toggle-button {
+  position: relative;
+  width: 30px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.3s ease;
+  z-index: 1001;
+  flex-shrink: 0;
+}
+
+.nav-toggle-button:hover {
+  background: rgba(0, 255, 0, 0.1);
+}
+
+.triangle-icon {
+  color: var(--neon-green);
+  font-size: 20px;
+  font-weight: bold;
+  text-shadow: 0 0 10px var(--neon-green);
+  transition: transform 0.3s ease;
+}
+
+.nav-toggle-button:hover .triangle-icon {
+  transform: scale(1.2);
+  color: var(--neon-pink);
+}
+
+.nav-content {
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px 10px 10px;
+  width: calc(100% - 40px);
+  opacity: 1;
+  transition: opacity 0.2s ease;
+  align-items: center;
+}
+
+.app-navigation-wrapper.collapsed .nav-content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Основная навигация */
+.main-navigation {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-around;
+  margin-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--neon-pink);
 }
 
 .nav-link {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   text-decoration: none;
   color: var(--text-color);
-  padding: 8px 15px;
+  padding: 6px 12px;
   border-radius: 6px;
   border: 1px solid transparent;
   transition: all 0.3s ease;
   white-space: nowrap;
-  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.05);
+  margin-right: 28px;
 }
 
 .nav-link:hover {
@@ -55,43 +127,211 @@
   border: 1px solid var(--neon-pink);
 }
 
-/* === МОБИЛЬНАЯ ВЕРСИЯ (НЕ fixed, внутри рамки) === */
-@media (max-width: 768px) {
-  .app-navigation {
-    /* УБИРАЕМ ВСЕ fixed/absolute! */
-    position: static;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 12px;
-    height: auto;
-    margin: 0;
-    border: 2px solid var(--neon-green);
-    border-radius: 10px;
-    background: rgba(0, 0, 0, 0.9);
-    box-shadow: 0 4px 15px rgba(0, 255, 0, 0.2);
-    overflow: visible;
+/* === СЕКЦИЯ PRIORITY === */
+.priority-section {
+  margin-top: 5px;
+  margin-right: 28px;
+}
+
+.priority-nav-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--neon-blue);
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid var(--neon-blue);
+  background: rgba(0, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.priority-nav-link:hover {
+  background: rgba(0, 255, 255, 0.1);
+  border-color: var(--neon-pink);
+  transform: translateY(-2px);
+}
+
+.priority-section.priority-active .priority-nav-link {
+  color: var(--neon-green);
+  border-color: var(--neon-green);
+  background: rgba(0, 255, 0, 0.1);
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+}
+
+.priority-link-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* === STICKY СОСТОЯНИЕ (ТОЛЬКО ДЕСКТОП) === */
+@media (min-width: 769px) {
+  .app-navigation-wrapper.sticky {
+    position: fixed;
+    top: 0 !important;
+    left: 0;
+    width: 100% !important;
+    height: 120px !important;
+    border-radius: 0 !important;
+    border-right: none !important;
+    border-bottom: 2px solid var(--neon-green) !important;
+    background: rgba(0, 0, 0, 0.98) !important;
+    z-index: 1100;
+    animation: slideDown 0.3s ease-out;
   }
-  
-  .nav-link {
-    width: 90%;
-    max-width: 300px;
-    justify-content: center;
-    padding: 12px;
-    min-height: 44px;
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .app-navigation-wrapper.sticky.collapsed {
+    width: 30px !important;
+    height: 120px !important;
+  }
+
+  .app-navigation-wrapper.sticky.collapsed .nav-content {
+    opacity: 0;
+    pointer-events: none;
   }
 }
 
-/* Очень маленькие экраны */
-@media (max-width: 480px) {
-  .app-navigation {
-    padding: 10px;
-    gap: 6px;
+/* === МОБИЛЬНАЯ ВЕРСИЯ === */
+/* === МОБИЛЬНАЯ ВЕРСИЯ === */
+@media (max-width: 768px) {
+  .app-navigation-wrapper {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 60px !important;
+    min-height: 60px !important;
+    max-height: 60px !important;
+    border-bottom: 2px solid var(--neon-green) !important;
+    background: rgba(0, 0, 0, 0.98) !important;
+    z-index: 2100;
+    overflow: visible !important;
+    display: flex; /* ← Добавляем flex */
+    align-items: center; /* ← Выравниваем по вертикали */
+    padding: 0 15px; /* ← Добавляем отступы */
+  }
+
+  /* AppNavigation.css */
+@media (max-width: 768px) {
+  .triangle-icon {
+    font-size: 30px; /* Увеличиваем на мобилках */
+    font-weight: 900; /* Делаем жирнее */
+  }
+}
+  
+  /* Свёрнутое состояние - полупрозрачное */
+  .app-navigation-wrapper.collapsed {
+    opacity: 0.8;
+    background: rgba(0, 0, 0, 0.7) !important;
+  }
+  
+  /* Развёрнутое состояние - полноцветное */
+  .app-navigation-wrapper.expanded {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.98) !important;
+  }
+  
+  /* Кнопка toggle - слева */
+  .nav-toggle-button {
+    position: relative; /* ← Меняем с absolute на relative */
+    top: auto; /* ← Убираем absolute позиционирование */
+    left: auto;
+    width: 40px !important;
+    height: 40px !important;
+    z-index: 2101;
+    margin-right: 15px; /* ← Отступ от email */
+  }
+  
+  /* Контент навигации - OVERLAY */
+  .nav-content {
+    position: absolute !important;
+    top: 60px !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-height: 0;
+    padding: 0 15px !important;
+    background: rgba(0, 0, 0, 0.98);
+    border-bottom: 2px solid var(--neon-green);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    opacity: 1;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 2099;
+  }
+  
+  .app-navigation-wrapper.expanded .nav-content {
+    max-height: 70vh;
+    opacity: 1;
+    padding: 15px !important;
+    padding-top: 10px !important;
+    overflow-y: auto;
+  }
+  
+  .app-navigation-wrapper.collapsed .nav-content {
+    display: block !important;
+    pointer-events: none;
+  }
+  
+  .main-navigation {
+    flex-direction: column;
+    gap: 10px !important;
+    margin-bottom: 15px !important;
   }
   
   .nav-link {
-    padding: 10px;
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 12px 8px !important;
+    margin-right: 0 !important;
+  }
+  
+  .priority-section {
+    margin: 0 auto !important;
+    width: fit-content;
+    padding-top: 10px;
+  }
+  
+  .app-navigation-wrapper.sticky {
+    position: fixed !important;
+    top: 0 !important;
+    animation: none !important;
+  }
+  
+  /* === MOBILE USER INFO (обновляем) === */
+  .mobile-user-info {
+    display: flex;
+    align-items: center;
+    flex: 1; /* ← Занимает всё доступное пространство */
+    height: 100%;
+    justify-content: center; /* ← Центрируем по горизонтали */
+  }
+  
+  .mobile-user-email {
+    color: var(--neon-blue);
     font-size: 0.9em;
-    width: 95%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center; /* ← Центрируем текст */
+    flex: 1; /* ← Растягиваемся */
+    max-width: none; /* ← Убираем ограничение */
+    margin-left: 30px;
+  }
+  
+  .mobile-logout-wrapper {
+    margin-left: auto; /* ← Прижимаем к правому краю */
+    margin-right: 0; /* ← Убираем правый отступ */
   }
 }

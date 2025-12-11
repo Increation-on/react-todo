@@ -49,10 +49,12 @@
         min-width: 80px;
         margin-left: 10px;
         margin-bottom: 10px;
+        margin-top: 8px;
     }
     
     .logout-icon {
         font-size: 1.1rem;
+        margin-left: 14px;
     }
 }
 
@@ -76,4 +78,36 @@
         color: var(--neon-pink);
         box-shadow: none;
     }
+
+
+/* Существующие стили + добавляем: */
+
+.logout-button.compact {
+  padding: 6px 10px !important;
+  min-width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
+.logout-button.compact .logout-text {
+  display: none; /* Скрываем текст в compact режиме */
+}
+
+.logout-button.compact .logout-icon {
+  margin-right: 0;
+  font-size: 1.2em;
+}
+
+/* Адаптация для мобилок в навигации */
+@media (max-width: 768px) {
+  .logout-button:not(.compact) {
+    padding: 8px 12px;
+    font-size: 0.9em;
+  }
+  
+  .logout-button:not(.compact) .logout-text {
+    font-size: 0.9em;
+  }
+}}

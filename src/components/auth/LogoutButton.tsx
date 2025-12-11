@@ -1,9 +1,13 @@
 import { useAuthStore } from '../../store/AuthStore.tsx'
 import { useNotificationStore } from '../../store/NotificationStore.tsx'
 import './../../styles/LogoutButton.css'
-import { useState, useEffect } from 'react' // Добавляем
+import { useState, useEffect } from 'react'
 
-const LogoutButton = () => {
+interface LogoutButtonProps {
+  compact?: boolean; // Новый пропс для компактного вида
+}
+
+const LogoutButton = ({ compact = false }: LogoutButtonProps) => {
     const logout = useAuthStore(state => state.logout)
     const { showNotification } = useNotificationStore()
     
@@ -15,7 +19,7 @@ const LogoutButton = () => {
             setIsMobile(window.innerWidth <= 768)
         }
         
-        checkMobile() // Проверяем сразу
+        checkMobile()
         window.addEventListener('resize', checkMobile)
         
         return () => window.removeEventListener('resize', checkMobile)
@@ -49,15 +53,17 @@ const LogoutButton = () => {
     
     return (
         <button 
-            className="logout-button"
+            className={`logout-button ${compact ? 'compact' : ''}`}
             onClick={handleLogout}
             aria-label="Logout"
-            title="Logout"
+            title={compact ? 'Выйти' : 'Выйти из системы'}
         >
             <span className="logout-icon">🚪</span>
-            <span className="logout-text">
-                {isMobile ? 'Exit' : 'Exit System'} {/* Меняем текст */}
-            </span>
+            {!compact && (
+                <span className="logout-text">
+                    {isMobile ? 'Exit' : 'Exit System'}
+                </span>
+            )}
         </button>
     )
 }

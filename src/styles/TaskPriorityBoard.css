@@ -9,6 +9,7 @@
   min-height: calc(100vh - 200px);
   background: rgba(0, 0, 0, 0.5);
   position: relative;
+  justify-content: center;
 }
 
 /* Полоска глитч-эффекта вверху */
@@ -19,23 +20,40 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, 
-    transparent, 
-    #ff00ff, 
-    #00ffff, 
-    #00ff00, 
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      #ff00ff,
+      #00ffff,
+      #00ff00,
+      transparent);
   animation: glitch 3s infinite;
 }
 
-/* Если у тебя уже есть анимация glitch в App.css, удали эту */
 @keyframes glitch {
-  0% { opacity: 0.8; transform: translateX(0); }
-  25% { opacity: 1; transform: translateX(-5px); }
-  50% { opacity: 0.9; transform: translateX(5px); }
-  75% { opacity: 1; transform: translateX(-3px); }
-  100% { opacity: 0.8; transform: translateX(0); }
+  0% {
+    opacity: 0.8;
+    transform: translateX(0);
+  }
+
+  25% {
+    opacity: 1;
+    transform: translateX(-5px);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: translateX(5px);
+  }
+
+  75% {
+    opacity: 1;
+    transform: translateX(-3px);
+  }
+
+  100% {
+    opacity: 0.8;
+    transform: translateX(0);
+  }
 }
 
 /* === СОСТОЯНИЕ ПУСТОТЫ === */
@@ -67,7 +85,7 @@
   font-size: 1.2rem;
 }
 
-/* === СКРОЛЛБАР (необязательно, но красиво) === */
+/* === СКРОЛЛБАР === */
 .priority-board::-webkit-scrollbar {
   height: 8px;
 }
@@ -90,15 +108,210 @@
 /* === АДАПТИВНОСТЬ === */
 @media (max-width: 768px) {
   .priority-board {
+    flex-direction: column;
     gap: 15px;
     padding: 15px;
-    min-height: calc(100vh - 150px);
+    min-height: auto;
+    overflow-x: visible;
+    overflow-y: auto;
   }
-  
+
+  .priority-board::-webkit-scrollbar {
+    height: 0;
+    width: 8px;
+  }
+
   .board-empty,
   .board-loading {
     margin: 20px;
     padding: 40px 15px;
     font-size: 1rem;
+  }
+}
+
+/* === ОСНОВНЫЕ СТИЛИ КАРТОЧКИ === */
+.task-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  cursor: grab;
+  user-select: none;
+  overflow: visible;
+}
+
+.task-card:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.task-card.dragging {
+  cursor: grabbing;
+  opacity: 0.7;
+  transform: rotate(2deg);
+}
+
+.task-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.task-text {
+  flex: 1;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* Приоритетные стили для карточек */
+.task-card.high {
+  border-left: 4px solid #ff5555;
+}
+
+.task-card.medium {
+  border-left: 4px solid #ffaa55;
+}
+
+.task-card.low {
+  border-left: 4px solid #55ff55;
+}
+
+.task-card.none {
+  border-left: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+/* === СТИЛИ ВЫПАДАЮЩЕГО МЕНЮ (ОБЩИЕ) === */
+.priority-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0 0 12px 12px;
+  padding: 16px;
+  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(20px);
+  margin-top: 4px;
+  display: none;
+}
+
+/* Карточка с открытым меню должна быть выше */
+.task-card.menu-open {
+  z-index: 999;
+  position: relative;
+}
+
+/* === СТИЛИ ДЛЯ МОБИЛОК === */
+@media (max-width: 768px) {
+  /* Показываем меню на мобилках */
+  .priority-menu {
+    display: block;
+  }
+
+  /* Кнопка меню */
+  .task-menu-button {
+    display: flex;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    padding: 0;
+  }
+
+  .task-menu-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+  }
+
+  /* Стили меню для мобилок */
+  .menu-title {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.95rem;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.95);
+    padding: 16px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.05rem;
+    margin: 10px 0;
+    transition: all 0.2s ease;
+    min-height: 52px;
+  }
+
+  .menu-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  /* Цвета для приоритетов в меню */
+  .menu-item.high {
+    border-left: 6px solid #ff5555;
+  }
+
+  .menu-item.medium {
+    border-left: 6px solid #ffaa55;
+  }
+
+  .menu-item.low {
+    border-left: 6px solid #55ff55;
+  }
+
+  .menu-item.none {
+    border-left: 6px solid rgba(255, 255, 255, 0.4);
+  }
+}
+
+/* Для десктопа */
+@media (min-width: 769px) {
+  .task-menu-button {
+    display: none;
+  }
+
+  .task-content {
+    justify-content: flex-start;
+  }
+
+  .task-text {
+    flex: 1;
   }
 }

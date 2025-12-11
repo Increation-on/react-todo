@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import PriorityColumn from './PriorityColumn.tsx';
@@ -13,19 +13,40 @@ import { Priority } from '../../types/task.types.ts';
 const TaskPriorityBoard: React.FC = () => {
   const { tasksByPriority, total, isLoadingPriorirty } = usePriorityTasks();
   
-  // Получаем методы из стора
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
+  
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    
+    const handleMediaChange = (e: MediaQueryListEvent | MediaQueryList) => {
+      const mobile = e.matches;
+      console.log('📱 TaskPriorityBoard: isMobile changed to', mobile);
+      setIsMobile(mobile);
+    };
+    
+    handleMediaChange(mediaQuery);
+    mediaQuery.addEventListener('change', handleMediaChange);
+    
+    return () => mediaQuery.removeEventListener('change', handleMediaChange);
+  }, []);
+  
+  const columnOrder = isMobile 
+    ? ['none', 'high', 'medium', 'low'] as const
+    : ['high', 'medium', 'low', 'none'] as const;
+  
+  console.log('🎯 Column order:', columnOrder, 'isMobile:', isMobile);
+
   const { reorderTasksInColumn, updateTaskPriority } = useTaskStore();
   const getUserId = useAuthStore(state => state.getUserId);
   
-  // Колбэк для сохранения в стор
- const handleDragComplete = useCallback((result: any) => {
+  // Функция для DnD перемещения
+  const handleDragComplete = useCallback((result: any) => {
     const userId = getUserId();
     if (!userId) {
       console.error('Пользователь не авторизован');
       return;
     }
     
-    // Защита: проверяем что result существует
     if (!result || !result.newTasks) {
       console.error('Нет данных о задачах в результате DnD');
       return;
@@ -38,15 +59,9 @@ const TaskPriorityBoard: React.FC = () => {
       return;
     }
     
-    // 1. Сначала обрабатываем изменение приоритетов (если есть)
     if (changes.priorityChanges && Array.isArray(changes.priorityChanges)) {
-     
-      
       changes.priorityChanges.forEach((change: any, index: number) => {
         if (change && change.taskId && change.toPriority) {
-        
-          
-          // 🔥 ВЫЗЫВАЕМ updateTaskPriority
           updateTaskPriority(
             change.taskId, 
             change.toPriority, 
@@ -56,26 +71,31 @@ const TaskPriorityBoard: React.FC = () => {
       });
     }
     
-    // 2. Потом пересортировываем колонки
     if (changes.reorderedColumns && Array.isArray(changes.reorderedColumns)) {
-      console.log(`📊 Пересортировка колонок: ${changes.reorderedColumns.join(', ')}`);
+      console.log(`📊 Пересортировка колонок: ${changes.reorderedColumns.join(', ')}`)
       
       changes.reorderedColumns.forEach((priority: Priority) => {
-        const columnTasks = newTasks[priority];
+        const columnTasks = newTasks[priority]
         if (columnTasks && columnTasks.length > 0) {
-          const taskIdsInOrder = columnTasks.map((task: any) => task.id);
-          console.log(`📝 Колонка ${priority}: ${taskIdsInOrder.length} задач`);
-          
-          // 🔥 ВЫЗЫВАЕМ reorderTasksInColumn
-          reorderTasksInColumn(priority, taskIdsInOrder);
+          const taskIdsInOrder = columnTasks.map((task: any) => task.id)
+          reorderTasksInColumn(priority, taskIdsInOrder)
         }
       });
     }
-    
-    console.log('✅ Изменения отправлены в стор');
-}, [reorderTasksInColumn, updateTaskPriority, getUserId]);
+  }, [reorderTasksInColumn, updateTaskPriority, getUserId]);
 
-  // Используем хук с колбэком (теперь без DragOverlay)
+  // 🆕 Функция для перемещения через меню
+  const handleMoveTask = useCallback((taskId: string | number, newPriority: Priority) => {
+    const userId = getUserId();
+    if (!userId) {
+      console.error('Пользователь не авторизован');
+      return;
+    }
+    
+    console.log(`🔄 Menu: Moving task ${taskId} to ${newPriority}`);
+    updateTaskPriority(taskId, newPriority, 0);
+  }, [updateTaskPriority, getUserId]);
+
   const {
     orderedTasks,
     dragOverColumn,
@@ -84,14 +104,14 @@ const TaskPriorityBoard: React.FC = () => {
     handleDragMove,
     handleDragEnd,
     handleDragCancel,
-    activeTask // 🔥 Получаем activeTask из хука
+    activeTask
   } = useTaskDnD({
     initialTasks: tasksByPriority,
     onDragComplete: handleDragComplete
   });
 
-  if (isLoadingPriorirty) return <div className="board-loading">Загрузка...</div>;
-  if (total === 0) return <div className="board-empty">Нет задач...</div>;
+  if (isLoadingPriorirty) return <div className="board-loading">Loading...</div>;
+  if (total === 0) return <div className="board-empty">No tasks...</div>;
 
   return (
     <DndContext
@@ -103,7 +123,7 @@ const TaskPriorityBoard: React.FC = () => {
       onDragCancel={handleDragCancel}
     >
       <div className="priority-board">
-        {(['high', 'medium', 'low', 'none'] as const).map((priority) => (
+        {columnOrder.map((priority) => (
           <SortableContext
             key={priority}
             items={orderedTasks[priority]?.map(t => t.id.toString()) || []}
@@ -113,12 +133,13 @@ const TaskPriorityBoard: React.FC = () => {
               priority={priority}
               tasks={orderedTasks[priority] || []}
               isDragOver={dragOverColumn === priority}
+              isMobile={isMobile}
+              onMoveTask={handleMoveTask} // 🆕 Передаем функцию
             />
           </SortableContext>
         ))}
       </div>
       
-      {/* 🔥 Используем отдельный компонент DragOverlay */}
       <TaskDragOverlay activeTask={activeTask} />
     </DndContext>
   );

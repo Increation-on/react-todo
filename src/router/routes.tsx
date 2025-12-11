@@ -52,7 +52,7 @@ export const routes: RouteItem[] = [
     path: '/priority',
     component: TaskPriorityBoard,
     isProtected: true,
-    label: 'Priority'
+    label: 'Priority Board'
   },
 ];
 
