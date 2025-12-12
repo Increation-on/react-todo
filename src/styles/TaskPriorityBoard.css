@@ -1,15 +1,25 @@
-/* TaskPriorityBoard.css - Стили для доски приоритетов */
+/* TaskPriorityBoard.css - ОБНОВЛЕННЫЕ СТИЛИ С CSS GRID И ФИКСОМ МЕНЮ */
 
-/* === ОСНОВНОЙ КОНТЕЙНЕР === */
+/* === ОСНОВНОЙ КОНТЕЙНЕР С GRID === */
 .priority-board {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 25px;
   padding: 25px;
-  overflow-x: auto;
   min-height: calc(100vh - 200px);
   background: rgba(0, 0, 0, 0.5);
   position: relative;
-  justify-content: center;
+  align-items: start;
+  overflow-y: auto;
+}
+
+/* Убираем горизонтальный скролл для десктопа */
+.priority-board::-webkit-scrollbar {
+  height: 0;
+}
+
+.priority-board {
+  overflow-x: visible;
 }
 
 /* Полоска глитч-эффекта вверху */
@@ -27,6 +37,7 @@
       #00ff00,
       transparent);
   animation: glitch 3s infinite;
+  z-index: 10;
 }
 
 @keyframes glitch {
@@ -58,6 +69,7 @@
 
 /* === СОСТОЯНИЕ ПУСТОТЫ === */
 .board-empty {
+  grid-column: 1 / -1;
   padding: 60px 20px;
   text-align: center;
   color: rgba(255, 255, 255, 0.6);
@@ -78,6 +90,7 @@
 }
 
 .board-loading {
+  grid-column: 1 / -1;
   padding: 60px 20px;
   text-align: center;
   color: rgba(0, 255, 255, 0.8);
@@ -85,9 +98,9 @@
   font-size: 1.2rem;
 }
 
-/* === СКРОЛЛБАР === */
+/* === СКРОЛЛБАР ТОЛЬКО ДЛЯ ВЕРТИКАЛЬНОГО СКРОЛЛА === */
 .priority-board::-webkit-scrollbar {
-  height: 8px;
+  width: 8px;
 }
 
 .priority-board::-webkit-scrollbar-track {
@@ -96,37 +109,13 @@
 }
 
 .priority-board::-webkit-scrollbar-thumb {
-  background: linear-gradient(90deg, #ff00ff, #00ffff, #00ff00);
+  background: linear-gradient(to bottom, #ff00ff, #00ffff, #00ff00);
   border-radius: 4px;
 }
 
 .priority-board::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(90deg, #ff00ff, #00ffff, #00ff00);
+  background: linear-gradient(to bottom, #ff00ff, #00ffff, #00ff00);
   opacity: 0.8;
-}
-
-/* === АДАПТИВНОСТЬ === */
-@media (max-width: 768px) {
-  .priority-board {
-    flex-direction: column;
-    gap: 15px;
-    padding: 15px;
-    min-height: auto;
-    overflow-x: visible;
-    overflow-y: auto;
-  }
-
-  .priority-board::-webkit-scrollbar {
-    height: 0;
-    width: 8px;
-  }
-
-  .board-empty,
-  .board-loading {
-    margin: 20px;
-    padding: 40px 15px;
-    font-size: 1rem;
-  }
 }
 
 /* === ОСНОВНЫЕ СТИЛИ КАРТОЧКИ === */
@@ -138,22 +127,29 @@
   margin-bottom: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: grab;
   user-select: none;
   overflow: visible;
+  z-index: 1;
 }
 
 .task-card:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.2),
+    0 5px 25px rgba(0, 0, 0, 0.4);
+  z-index: 10;
 }
 
 .task-card.dragging {
   cursor: grabbing;
   opacity: 0.7;
   transform: rotate(2deg);
+  z-index: 1000;
 }
 
 .task-content {
@@ -189,129 +185,342 @@
   border-left: 4px solid rgba(255, 255, 255, 0.3);
 }
 
-/* === СТИЛИ ВЫПАДАЮЩЕГО МЕНЮ (ОБЩИЕ) === */
-.priority-menu {
-  position: absolute;
-  top: 100%;
+/* === СТИЛИ МЕНЮ КНОПКИ === */
+.task-menu-button {
+  display: flex;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.task-menu-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+/* === ОВЕРЛЕЙ ДЛЯ МЕНЮ === */
+.menu-overlay {
+  position: fixed;
+  top: 0;
   left: 0;
   right: 0;
-  width: 100%;
-  max-height: 60vh;
-  overflow-y: auto;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9998;
+  display: none;
+  backdrop-filter: blur(5px);
+}
+
+.menu-overlay.active {
+  display: block;
+}
+
+/* === ВЫПАДАЮЩЕЕ МЕНЮ (ПОРТАЛ) === */
+.priority-menu {
+  display: none;
+  position: fixed;
+  z-index: 9999;
   background: rgba(0, 0, 0, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 0 0 12px 12px;
+  border-radius: 12px;
   padding: 16px;
-  z-index: 1000;
+  max-width: 90vw;
+  width: 280px;
+  max-height: 70vh;
+  overflow-y: auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(20px);
-  margin-top: 4px;
-  display: none;
+  animation: menu-slide-down 0.2s ease-out;
 }
 
-/* Карточка с открытым меню должна быть выше */
-.task-card.menu-open {
-  z-index: 999;
-  position: relative;
+.priority-menu.active {
+  display: block;
 }
 
-/* === СТИЛИ ДЛЯ МОБИЛОК === */
+@keyframes menu-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Заголовок меню */
+.menu-title {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Элементы меню */
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.95);
+  padding: 14px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 1rem;
+  margin: 8px 0;
+  transition: all 0.2s ease;
+  min-height: 50px;
+  border-left: 6px solid;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  transform: translateX(5px);
+}
+
+/* Цвета для приоритетов в меню */
+.menu-item.high {
+  border-left-color: #ff00ff;
+}
+
+.menu-item.medium {
+  border-left-color: #00ffff;
+}
+
+.menu-item.low {
+  border-left-color: #00ff00;
+}
+
+.menu-item.none {
+  border-left-color: rgba(255, 255, 255, 0.4);
+}
+
+.menu-item.close {
+  border-left-color: rgba(255, 0, 0, 0.5);
+  background: rgba(255, 0, 0, 0.1);
+}
+
+/* === АДАПТИВНОСТЬ === */
 @media (max-width: 768px) {
-  /* Показываем меню на мобилках */
-  .priority-menu {
-    display: block;
+  .priority-board {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 15px;
+    min-height: auto;
   }
 
-  /* Кнопка меню */
+  .board-empty,
+  .board-loading {
+    margin: 20px;
+    padding: 40px 15px;
+    font-size: 1rem;
+  }
+  
   .task-menu-button {
     display: flex;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.7);
-    border-radius: 6px;
-    width: 30px;
-    height: 30px;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1.2rem;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-    padding: 0;
   }
-
-  .task-menu-button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border-color: rgba(255, 255, 255, 0.4);
-    transform: scale(1.1);
-  }
-
-  /* Стили меню для мобилок */
-  .menu-title {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.95rem;
-    padding: 12px 16px;
-    margin-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    text-align: center;
-    font-weight: 500;
-  }
-
-  .menu-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: rgba(255, 255, 255, 0.95);
-    padding: 16px 20px;
-    border-radius: 12px;
-    cursor: pointer;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 1.05rem;
-    margin: 10px 0;
-    transition: all 0.2s ease;
-    min-height: 52px;
-  }
-
-  .menu-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    transform: translateY(-1px);
-  }
-
-  /* Цвета для приоритетов в меню */
-  .menu-item.high {
-    border-left: 6px solid #ff5555;
-  }
-
-  .menu-item.medium {
-    border-left: 6px solid #ffaa55;
-  }
-
-  .menu-item.low {
-    border-left: 6px solid #55ff55;
-  }
-
-  .menu-item.none {
-    border-left: 6px solid rgba(255, 255, 255, 0.4);
+  
+  .priority-menu {
+    width: 90vw;
+    max-width: 300px;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
   }
 }
 
-/* Для десктопа */
+/* Для средних экранов (планшеты) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .priority-board {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+}
+
+/* Для больших экранов */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .priority-board {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+  }
+}
+
+/* Для очень больших экранов */
+@media (min-width: 1441px) {
+  .priority-board {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 30px;
+    padding: 30px;
+  }
+}
+
+/* Для десктопа - скрываем кнопку меню */
 @media (min-width: 769px) {
   .task-menu-button {
     display: none;
   }
+}
 
-  .task-content {
-    justify-content: flex-start;
+/* Добавь в конец файла */
+
+/* Мобильные улучшения для DnD */
+@media (max-width: 768px) {
+  .task-card {
+    touch-action: pan-y; /* Разрешаем вертикальный скролл */
+    min-height: 60px; /* Увеличиваем область тапа */
+    padding: 16px 14px;
+    position: relative;
   }
+  
+  /* Индикатор что можно тащить (только на мобилках) */
+  .task-card::before {
+    content: '≡';
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  /* При активном drag */
+  .task-card.dragging {
+    opacity: 0.7;
+    transform: rotate(2deg);
+    box-shadow: 0 0 30px currentColor !important;
+  }
+  
+  /* Кнопка меню больше для мобилок */
+  .task-menu-button {
+    width: 36px;
+    height: 36px;
+    font-size: 1.4rem;
+  }
+}
 
-  .task-text {
-    flex: 1;
+/* Десктоп hover эффекты */
+@media (min-width: 769px) {
+  .task-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 
+      0 0 20px rgba(255, 255, 255, 0.2),
+      0 5px 25px rgba(0, 0, 0, 0.4);
+    z-index: 10;
+  }
+}
+
+/* ===== TOUCH SUPPORT ===== */
+
+/* Long press индикатор */
+.task-card.long-press {
+  position: relative;
+  animation: pulse-border 1s infinite;
+  box-shadow: 0 0 25px currentColor !important;
+}
+
+@keyframes pulse-border {
+  0%, 100% { 
+    border-color: rgba(0, 255, 255, 0.8);
+  }
+  50% { 
+    border-color: rgba(255, 0, 255, 0.8);
+  }
+}
+
+.task-card.long-press::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #00ffff, #ff00ff);
+  border-radius: 0 0 3px 3px;
+  animation: fill-progress 0.5s linear forwards;
+}
+
+@keyframes fill-progress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Мобильные стили */
+@media (max-width: 768px) {
+  .task-card {
+    touch-action: pan-y;
+    min-height: 70px;
+    padding: 20px 16px;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  .task-menu-button {
+    width: 40px;
+    height: 40px;
+    font-size: 1.6rem;
+  }
+  
+  /* Индикатор что элемент можно тащить */
+  .task-card::before {
+    content: '☰';
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 16px;
+  }
+  
+  .task-content {
+    margin-left: 20px;
+  }
+  
+  /* Убираем десктопные hover эффекты на мобилках */
+  .task-card:hover {
+    transform: none !important;
+  }
+}
+
+/* Десктоп стили */
+@media (min-width: 769px) {
+  .task-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 
+      0 0 20px rgba(255, 255, 255, 0.2),
+      0 5px 25px rgba(0, 0, 0, 0.4);
+    z-index: 10;
   }
 }

@@ -289,13 +289,18 @@
   padding: 2px 8px;
   margin-right: 10px;
   border-radius: 12px;
-  font-size: 11px;
+  font-size: clamp(9px, 1.5vw, 11px); /* Минимум 9px, адаптивно до 11px */
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border: 1px solid transparent;
   box-shadow: 0 0 5px currentColor;
   transition: all 0.2s ease;
+  max-width: 20%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
 }
 
 /* Киберпанк-стили для приоритетов */
@@ -330,3 +335,4 @@
   transform: translateY(-1px);
   box-shadow: 0 0 10px currentColor;
 }
+

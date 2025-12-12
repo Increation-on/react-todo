@@ -3,6 +3,12 @@
 /* Контейнер списка задач */
 
 /* Заголовок списка */
+
+.task-list-container {
+  margin-left: 32px;
+  margin-right: 32px;
+}
+
 .task-list-title {
   color: var(--neon-blue);
   margin-bottom: 1rem;

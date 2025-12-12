@@ -11,15 +11,6 @@ body {
   min-height: 100vh;
 }
 
-@keyframes glitch {
-  0% { transform: translate(0) }
-  20% { transform: translate(-2px, 2px) }
-  40% { transform: translate(-2px, -2px) }
-  60% { transform: translate(2px, 2px) }
-  80% { transform: translate(2px, -2px) }
-  100% { transform: translate(0) }
-}
-
 :root {
   --glitch-bg: #000000;
   --neon-green: #00ff00;
@@ -28,30 +19,24 @@ body {
   --text-color: #ffffff;
 }
 
-/* === СКРЫТИЕ HEADER ПРИ STICKY === */
-.header-hidden {
-  transform: translateY(-100%);
-  opacity: 0;
-  transition: transform 0.3s ease, opacity 0.2s ease;
-  pointer-events: none;
-  height: 0;
-  overflow: hidden;
-}
+/* === КОНТЕНТ (ДЕСКТОП) === */
 
-/* === ОСНОВНОЙ КОНТЕНТ (ДЕСКТОП) === */
+/* 1. Базовые отступы */
 .app-main {
-  padding-top: 30px !important;
-  min-height: calc(100vh - 30px);
-  width: 100%;
-  transition: padding-top 0.3s ease;
+  min-height: 100vh;
+  transition: margin-top 0.3s ease;
 }
 
-/* Когда header скрыт (sticky режим на десктопе) */
-.header-hidden ~ .app-navigation-wrapper.sticky ~ .app-main {
-  padding-top: 250px !important;
+.header-hidden ~ .app-main {
+  margin-top: 120px !important;
 }
 
-/* === МОБИЛЬНАЯ ВЕРСИЯ (ОДИН медиазапрос) === */
+/* Header не скрыт - обычный margin-top */
+.app-main:not(.header-hidden ~ .app-main) {
+  margin-top: 30px !important;
+}
+
+/* === МОБИЛЬНАЯ ВЕРСИЯ === */
 @media (max-width: 768px) {
   /* Обёртка для мобильной рамки */
   .app-wrapper {
@@ -84,35 +69,11 @@ body {
     padding-right: 15px;
   }
   
-  .app-header {
-    display: none !important;
-  }
-  
   /* Основной контент на мобилках */
   .app-main {
     padding: 15px !important;
-    padding-top: 70px !important; /* ЕДИНСТВЕННОЕ значение */
+    padding-top: 30px !important;
     padding-bottom: 20px !important;
-    transition: padding-top 0.3s ease; /* Оставляем transition */
-  }
-  
-  .header-hidden {
-    display: none !important;
-  }
-}
-
-/* Очень маленькие экраны */
-@media (max-width: 480px) {
-  .app-wrapper {
-    border-radius: 12px;
-    border-width: 1.5px;
-    margin: 5px auto;
-  }
-  
-  .app-wrapper::before {
-    width: 6px;
-    height: 6px;
-    top: 8px;
-    right: 8px;
+    margin-top: 60px !important; /* Navigation fixed height */
   }
 }
