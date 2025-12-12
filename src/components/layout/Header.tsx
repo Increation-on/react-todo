@@ -1,9 +1,13 @@
-// src/components/Header/Header.tsx
 import { useAuthStore } from '../../store/AuthStore.tsx'
 import LogoutButton from '../auth/LogoutButton.tsx'
 import './../../styles/Header.css'
 
-const Header: React.FC = () => {
+// ДОБАВЛЯЕМ: пропс для класса
+interface HeaderProps {
+  className?: string;
+}
+
+const Header: React.FC<HeaderProps> = ({ className = '' }) => {
     const token = useAuthStore(state => state.token)
     const getCurrentUser = useAuthStore(state => state.getCurrentUser)
     const currentUser = getCurrentUser()
@@ -11,7 +15,8 @@ const Header: React.FC = () => {
     if (!token) return null // Не показываем хедер если не авторизован
 
     return (
-        <header className="app-header">
+        // ИЗМЕНЕНИЕ: добавляем className к header
+        <header className={`app-header ${className}`}>
             <div className="header-left">
                 <h1 className="app-title">
                     <span className="title-glitch">React To-Do</span>

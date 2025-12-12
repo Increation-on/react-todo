@@ -1,0 +1,196 @@
+/* MobilePriorityMenu.css - полные стили для мобильного меню */
+
+/* === ОВЕРЛЕЙ === */
+.menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9998;
+  backdrop-filter: blur(5px);
+  animation: overlay-fade-in 0.2s ease-out;
+}
+
+@keyframes overlay-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* === ОСНОВНОЕ МЕНЮ === */
+.priority-menu {
+  position: fixed;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 16px;
+  width: 280px;
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(255, 0, 255, 0.3),
+    0 0 40px rgba(0, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  animation: menu-slide-down 0.2s ease-out;
+  font-family: 'Courier New', Courier, monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@keyframes menu-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* === ЗАГОЛОВОК МЕНЮ === */
+.menu-title {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* === КНОПКИ МЕНЮ === */
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.95);
+  padding: 14px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 8px 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 50px;
+  border-left: 6px solid;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  transform: translateX(5px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Цвета для приоритетов */
+.menu-item.high {
+  border-left-color: #ff00ff;
+  color: #ff99ff;
+}
+
+.menu-item.medium {
+  border-left-color: #00ffff;
+  color: #99ffff;
+}
+
+.menu-item.low {
+  border-left-color: #00ff00;
+  color: #99ff99;
+}
+
+.menu-item.none {
+  border-left-color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.menu-item.close {
+  border-left-color: rgba(255, 0, 0, 0.5);
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff9999;
+  margin-top: 20px;
+  width:60%;
+}
+
+/* === АДАПТИВНОСТЬ === */
+@media (max-width: 768px) {
+  .priority-menu {
+    width: 90vw;
+    max-width: 300px;
+    /* Центрируем на мобилках */
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    animation: mobile-menu-appear 0.25s ease-out;
+  }
+
+  @keyframes mobile-menu-appear {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  .menu-item {
+    min-height: 56px;
+    font-size: 1.05rem;
+  }
+
+  .menu-title {
+    font-size: 1.1rem;
+    padding: 16px;
+  }
+}
+
+/* Для десктопа - немного другие стили */
+@media (min-width: 769px) {
+  .priority-menu {
+    width: 260px;
+    animation: desktop-menu-slide 0.2s ease-out;
+  }
+
+  @keyframes desktop-menu-slide {
+    from {
+      opacity: 0;
+      transform: translateY(-5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* === СКРОЛЛБАР В МЕНЮ === */
+.priority-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.priority-menu::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+}
+
+.priority-menu::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #ff00ff, #00ffff);
+  border-radius: 3px;
+}

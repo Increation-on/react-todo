@@ -183,4 +183,8 @@
     width: 90%;
     max-width: 250px;
   }
+
+  .task-list-container {
+    margin: 0;
+  }
 }

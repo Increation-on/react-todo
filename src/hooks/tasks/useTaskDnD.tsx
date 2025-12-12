@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { 
   DragEndEvent, 
   DragStartEvent,
@@ -56,19 +56,19 @@ export const useTaskDnD = ({
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<Priority | null>(null);
 
-  // 🔥 РАЗДЕЛЬНЫЕ СЕНСОРЫ: MouseSensor для десктопа, TouchSensor для мобилок
+  // 🔥 ОПТИМАЛЬНАЯ КОНФИГУРАЦИЯ СЕНСОРОВ
   const sensors = useSensors(
-    // Мышь: работает мгновенно
+    // Для десктопа: работает мгновенно
     useSensor(MouseSensor, {
       activationConstraint: {
         distance: 3,
       }
     }),
-    // Тач: активируется через 500ms (long press)
+    // Для мобилок: активация через 150ms (лучший UX)
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 500,      // Long press 500ms
-        tolerance: 8,    // Допуск движения
+        delay: 150,    // Быстрее чем 500ms
+        tolerance: 10, // Оптимальный tolerance
       }
     })
   );
@@ -86,6 +86,12 @@ export const useTaskDnD = ({
     }
     
     setDragOverColumn(null);
+    
+    // 🔥 БЛОКИРУЕМ СКРОЛЛ СТРАНИЦЫ НА МОБИЛКАХ ПРИ НАЧАЛЕ DRAG
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+      document.body.classList.add('task-dragging-active');
+    }
+    
     console.log('🟢 Начало перетаскивания задачи:', taskId);
   }, [orderedTasks]);
 
@@ -102,6 +108,9 @@ export const useTaskDnD = ({
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
+    
+    // 🔥 РАЗБЛОКИРУЕМ СКРОЛЛ СТРАНИЦЫ
+    document.body.classList.remove('task-dragging-active');
     
     setActiveTask(null);
     setDragOverColumn(null);
@@ -129,7 +138,9 @@ export const useTaskDnD = ({
     }> = [];
     const reorderedColumns: Priority[] = [];
 
+    // Определяем тип операции
     if (activeData.priority === overData.priority && overData.type === 'task') {
+      // Внутри колонки
       const result = reorderWithinColumn(
         orderedTasks, 
         activeData.priority, 
@@ -142,6 +153,7 @@ export const useTaskDnD = ({
       }
     } 
     else if (activeData.priority !== overData.priority) {
+      // Между колонками
       const result = moveBetweenColumns(
         orderedTasks,
         activeData.priority,
@@ -157,10 +169,15 @@ export const useTaskDnD = ({
       reorderedColumns.push(...result.reorderedColumns);
     }
 
+    // Обновляем состояние
     setOrderedTasks(newTasks);
+    
+    // Создаём результат
     const result = createDragResult(newTasks, priorityChanges, reorderedColumns);
     
+    // Вызываем колбэк
     if (onDragComplete) {
+      console.log('🔄 Вызываем onDragComplete');
       onDragComplete(result);
     }
     
@@ -170,6 +187,9 @@ export const useTaskDnD = ({
   }, [orderedTasks, onDragComplete]);
 
   const handleDragCancel = useCallback(() => {
+    // 🔥 РАЗБЛОКИРУЕМ СКРОЛЛ СТРАНИЦЫ ПРИ ОТМЕНЕ
+    document.body.classList.remove('task-dragging-active');
+    
     setActiveTask(null);
     setDragOverColumn(null);
     console.log('🟡 Перетаскивание отменено');
