@@ -21,59 +21,19 @@ body {
 
 /* === КОНТЕНТ (ДЕСКТОП) === */
 
-/* 1. Базовые отступы */
+/* 1. Базовые отступы через CSS переменную */
 .app-main {
   min-height: 100vh;
   transition: margin-top 0.3s ease;
-}
-
-.header-hidden ~ .app-main {
-  margin-top: 120px !important;
-}
-
-/* Header не скрыт - обычный margin-top */
-.app-main:not(.header-hidden ~ .app-main) {
-  margin-top: 30px !important;
+  margin-top: 30px !important; /* ← Жёсткое значение */
 }
 
 /* === МОБИЛЬНАЯ ВЕРСИЯ === */
 @media (max-width: 768px) {
-  /* Обёртка для мобильной рамки */
-  .app-wrapper {
-    max-width: 100%;
-    margin: 10px auto;
-    overflow: hidden;
-    min-height: calc(100vh - 20px);
-    background: rgba(0, 0, 0, 0.95);
-    box-shadow: 
-      0 0 25px rgba(0, 255, 255, 0.2),
-      inset 0 0 15px rgba(0, 255, 255, 0.05);
-    position: relative;
-  }
-  
-  .app-wrapper::before {
-    content: '';
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 8px;
-    height: 8px;
-    border-top: 2px solid var(--neon-pink);
-    border-right: 2px solid var(--neon-pink);
-    border-radius: 0 4px 0 0;
-    opacity: 0.7;
-  }
-  
-  .app-wrapper > * {
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-  
-  /* Основной контент на мобилках */
   .app-main {
     padding: 15px !important;
     padding-top: 30px !important;
     padding-bottom: 20px !important;
-    margin-top: 60px !important; /* Navigation fixed height */
+    margin-top: 60px !important; /* ← Жёсткое значение */
   }
 }

@@ -260,9 +260,10 @@
   
   .add-task-button {
     padding: 0.7rem 1.2rem;
-    font-size: 0.95rem;
-    min-width: 120px;
-    height: 45px;
+    font-size: 0.8rem;
+    min-width: 80px;
+    height: 30px;
+    border: 1px solid;
   }
   
   .add-task-loading {
