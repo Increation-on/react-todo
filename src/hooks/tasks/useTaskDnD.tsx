@@ -1,9 +1,10 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { 
   DragEndEvent, 
   DragStartEvent,
   DragMoveEvent,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -37,7 +38,7 @@ interface UseTaskDnDProps {
 interface UseTaskDnDReturn {
   orderedTasks: TasksByPriority;
   activeTask: Task | null;
-  dragOverColumn: Priority | null; // ✅ Добавляем обратно
+  dragOverColumn: Priority | null;
   sensors: ReturnType<typeof useSensors>;
   handleDragStart: (event: DragStartEvent) => void;
   handleDragMove: (event: DragMoveEvent) => void;
@@ -55,13 +56,26 @@ export const useTaskDnD = ({
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<Priority | null>(null);
 
+  // 🔥 РАЗДЕЛЬНЫЕ СЕНСОРЫ: MouseSensor для десктопа, TouchSensor для мобилок
+  const sensors = useSensors(
+    // Мышь: работает мгновенно
+    useSensor(MouseSensor, {
+      activationConstraint: {
+        distance: 3,
+      }
+    }),
+    // Тач: активируется через 500ms (long press)
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 500,      // Long press 500ms
+        tolerance: 8,    // Допуск движения
+      }
+    })
+  );
+
   useEffect(() => {
     setOrderedTasks(normalizeTasks(initialTasks));
   }, [initialTasks]);
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
-  );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
     const taskId = event.active.id as string;
@@ -71,7 +85,7 @@ export const useTaskDnD = ({
       setActiveTask(task);
     }
     
-    setDragOverColumn(null); // ✅ Сбрасываем при начале перетаскивания
+    setDragOverColumn(null);
     console.log('🟢 Начало перетаскивания задачи:', taskId);
   }, [orderedTasks]);
 
@@ -89,7 +103,6 @@ export const useTaskDnD = ({
   const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     
-    // Сбрасываем состояния
     setActiveTask(null);
     setDragOverColumn(null);
     
@@ -116,9 +129,7 @@ export const useTaskDnD = ({
     }> = [];
     const reorderedColumns: Priority[] = [];
 
-    // Определяем тип операции
     if (activeData.priority === overData.priority && overData.type === 'task') {
-      // Внутри колонки
       const result = reorderWithinColumn(
         orderedTasks, 
         activeData.priority, 
@@ -131,7 +142,6 @@ export const useTaskDnD = ({
       }
     } 
     else if (activeData.priority !== overData.priority) {
-      // Между колонками
       const result = moveBetweenColumns(
         orderedTasks,
         activeData.priority,
@@ -140,24 +150,17 @@ export const useTaskDnD = ({
       );
       newTasks = result.newTasks;
       
-      // ✅ Используем non-null assertion, так как moveBetweenColumns всегда возвращает priorityChange
       if (result.priorityChange && result.priorityChange.taskId !== '') {
         priorityChanges.push(result.priorityChange);
       }
       
-      // ✅ result.reorderedColumns уже Priority[]
       reorderedColumns.push(...result.reorderedColumns);
     }
 
-    // Обновляем состояние
     setOrderedTasks(newTasks);
-    
-    // Создаём результат
     const result = createDragResult(newTasks, priorityChanges, reorderedColumns);
     
-    // Вызываем колбэк
     if (onDragComplete) {
-      console.log('🔄 Вызываем onDragComplete');
       onDragComplete(result);
     }
     
@@ -175,7 +178,7 @@ export const useTaskDnD = ({
   return {
     orderedTasks,
     activeTask,
-    dragOverColumn, // ✅ Возвращаем обратно
+    dragOverColumn,
     sensors,
     handleDragStart,
     handleDragMove,

@@ -1,18 +1,17 @@
 /* === ОСНОВНОЙ КОНТЕЙНЕР (десктоп) === */
 .app-navigation-wrapper {
   position: sticky;
-  top: 130px;
+  top: 80px;
   left: 0;
   z-index: 1000;
   display: flex;
   height: 115px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: rgba(0, 0, 0, 0.95);
   border-right: 2px solid var(--neon-green);
   border-bottom: 2px solid var(--neon-green);
-  overflow: hidden;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 20px rgba(0, 255, 0, 0.2);
+  transition: top 0.3s ease;
 }
 
 .app-navigation-wrapper.collapsed {
@@ -25,7 +24,25 @@
   opacity: 1;
 }
 
-/* === КНОПКА И КОНТЕНТ (общее) === */
+/* === STICKY РЕЖИМ === */
+.app-navigation-wrapper.sticky {
+  position: sticky !important;
+  top: 0 !important;
+  width: 100% !important;
+  border-right: none !important;
+  z-index: 1100;
+}
+
+.app-navigation-wrapper.sticky.collapsed {
+  width: 30px !important;
+}
+
+.app-navigation-wrapper.sticky.collapsed .nav-content {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* === КНОПКА И КОНТЕНТ === */
 .nav-toggle-button {
   position: relative;
   width: 30px;
@@ -165,45 +182,6 @@
   gap: 10px;
 }
 
-/* === STICKY СОСТОЯНИЕ (ТОЛЬКО ДЕСКТОП) === */
-@media (min-width: 769px) {
-  .app-navigation-wrapper.sticky {
-    position: fixed;
-    top: 0 !important;
-    left: 0;
-    width: 100% !important;
-    height: 120px !important;
-    border-radius: 0 !important;
-    border-right: none !important;
-    border-bottom: 2px solid var(--neon-green) !important;
-    background: rgba(0, 0, 0, 0.98) !important;
-    z-index: 1100;
-    animation: slideDown 0.3s ease-out;
-  }
-
-  @keyframes slideDown {
-    from {
-      transform: translateY(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  .app-navigation-wrapper.sticky.collapsed {
-    width: 30px !important;
-    height: 120px !important;
-  }
-
-  .app-navigation-wrapper.sticky.collapsed .nav-content {
-    opacity: 0;
-    pointer-events: none;
-  }
-}
-
-/* === МОБИЛЬНАЯ ВЕРСИЯ === */
 /* === МОБИЛЬНАЯ ВЕРСИЯ === */
 @media (max-width: 768px) {
   .app-navigation-wrapper {
@@ -218,43 +196,36 @@
     background: rgba(0, 0, 0, 0.98) !important;
     z-index: 2100;
     overflow: visible !important;
-    display: flex; /* ← Добавляем flex */
-    align-items: center; /* ← Выравниваем по вертикали */
-    padding: 0 15px; /* ← Добавляем отступы */
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
   }
-
-  /* AppNavigation.css */
-@media (max-width: 768px) {
-  .triangle-icon {
-    font-size: 30px; /* Увеличиваем на мобилках */
-    font-weight: 900; /* Делаем жирнее */
-  }
-}
   
-  /* Свёрнутое состояние - полупрозрачное */
+  .triangle-icon {
+    font-size: 30px;
+    font-weight: 900;
+  }
+  
   .app-navigation-wrapper.collapsed {
     opacity: 0.8;
     background: rgba(0, 0, 0, 0.7) !important;
   }
   
-  /* Развёрнутое состояние - полноцветное */
   .app-navigation-wrapper.expanded {
     opacity: 1;
     background: rgba(0, 0, 0, 0.98) !important;
   }
   
-  /* Кнопка toggle - слева */
   .nav-toggle-button {
-    position: relative; /* ← Меняем с absolute на relative */
-    top: auto; /* ← Убираем absolute позиционирование */
+    position: relative;
+    top: auto;
     left: auto;
     width: 40px !important;
     height: 40px !important;
     z-index: 2101;
-    margin-right: 15px; /* ← Отступ от email */
+    margin-right: 15px;
   }
   
-  /* Контент навигации - OVERLAY */
   .nav-content {
     position: absolute !important;
     top: 60px !important;
@@ -306,16 +277,14 @@
   .app-navigation-wrapper.sticky {
     position: fixed !important;
     top: 0 !important;
-    animation: none !important;
   }
   
-  /* === MOBILE USER INFO (обновляем) === */
   .mobile-user-info {
     display: flex;
     align-items: center;
-    flex: 1; /* ← Занимает всё доступное пространство */
+    flex: 1;
     height: 100%;
-    justify-content: center; /* ← Центрируем по горизонтали */
+    justify-content: center;
   }
   
   .mobile-user-email {
@@ -324,14 +293,14 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-align: center; /* ← Центрируем текст */
-    flex: 1; /* ← Растягиваемся */
-    max-width: none; /* ← Убираем ограничение */
+    text-align: center;
+    flex: 1;
+    max-width: none;
     margin-left: 30px;
   }
   
   .mobile-logout-wrapper {
-    margin-left: auto; /* ← Прижимаем к правому краю */
-    margin-right: 0; /* ← Убираем правый отступ */
+    margin-left: auto;
+    margin-right: 0;
   }
 }

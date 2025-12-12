@@ -1,15 +1,19 @@
 /* PriorityColumn.css - Киберпанк стиль для колонок приоритетов */
 
 /* === ОСНОВНЫЕ СТИЛИ КОЛОНКИ === */
+/* PriorityColumn.css - КОРРЕКТИРОВКА ДЛЯ GRID */
+
+/* === ОСНОВНЫЕ СТИЛИ КОЛОНКИ === */
 .priority-column {
   border: 2px solid;
   border-radius: 12px;
   padding: 20px;
-  min-width: 280px;
+  width: 100%;
   background: rgba(0, 0, 0, 0.8);
   min-height: 500px;
+  height: 100%;
   position: relative;
-  overflow: visible; /* 🔴 МЕНЯЕМ: hidden → visible */
+  overflow: visible;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
   font-family: 'Courier New', Courier, monospace;
@@ -83,6 +87,8 @@
   color: #fff;
 }
 
+/* === ОСТАЛЬНЫЕ СТИЛИ БЕЗ ИЗМЕНЕНИЙ === */
+/* ... остальной код PriorityColumn.css без изменений ... */
 /* === КАРТОЧКИ ЗАДАЧ === */
 .task-card {
   background: rgba(42, 42, 58, 0.8);
@@ -91,32 +97,49 @@
   margin-bottom: 12px;
   border-left: 4px solid;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.2s ease;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  /* ФИНАЛЬНОЕ ИСПРАВЛЕНИЕ: убираем трансформации, оставляем плавные переходы */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   cursor: pointer;
+  z-index: 1;
 }
 
-/* Эффект при наведении на задачу */
+/* ФИНАЛЬНОЕ ИСПРАВЛЕНИЕ: замена трансформаций на неоновый эффект */
 .task-card:hover {
-  transform: translateX(5px);
-  background: rgba(50, 50, 70, 0.9);
+  /* Убираем transform: translateX(5px); */
+  background: rgba(50, 50, 70, 0.95);
+  border-color: rgba(255, 255, 255, 0.3);
+  z-index: 10; /* Поднимаем при ховере */
+  
+  /* Неоновое свечение */
+  box-shadow: 
+    0 0 25px rgba(255, 255, 255, 0.15),
+    0 8px 30px rgba(0, 0, 0, 0.5);
+  
+  /* Градиентная рамка через псевдоэлемент */
+  position: relative;
 }
 
-/* Минимальный глитч-эффект */
-.task-card::before {
+/* Тонкая неоновая рамка при ховере */
+.task-card:hover::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transition: left 0.5s;
-}
-
-.task-card:hover::before {
-  left: 100%;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border-radius: 9px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.1)
+  );
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* Цвета левой границы карточек */
@@ -140,12 +163,62 @@
   box-shadow: inset 0 0 10px rgba(116, 125, 140, 0.1);
 }
 
+/* Цветные неоновые тени при ховере для разных приоритетов */
+.task-card.high:hover {
+  box-shadow: 
+    0 0 25px rgba(255, 0, 255, 0.3),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    inset 0 0 15px rgba(255, 0, 255, 0.1);
+}
+
+.task-card.medium:hover {
+  box-shadow: 
+    0 0 25px rgba(0, 255, 255, 0.3),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    inset 0 0 15px rgba(0, 255, 255, 0.1);
+}
+
+.task-card.low:hover {
+  box-shadow: 
+    0 0 25px rgba(0, 255, 0, 0.3),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    inset 0 0 15px rgba(0, 255, 0, 0.1);
+}
+
+.task-card.none:hover {
+  box-shadow: 
+    0 0 25px rgba(116, 125, 140, 0.3),
+    0 8px 30px rgba(0, 0, 0, 0.6),
+    inset 0 0 15px rgba(116, 125, 140, 0.1);
+}
+
+/* Улучшенный глитч-эффект (опционально, можно отключить) */
+.task-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+  transition: left 1s ease-out;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.task-card:hover::before {
+  left: 100%;
+  transition-duration: 0.5s;
+}
+
 /* === ТЕКСТ ЗАДАЧИ === */
 .task-text {
   color: #ffffff;
   font-size: 1rem;
   line-height: 1.4;
   word-break: break-word;
+  position: relative;
+  z-index: 2;
 }
 
 /* === СООБЩЕНИЕ "НЕТ ЗАДАЧ" === */
@@ -162,10 +235,8 @@
 /* === АДАПТИВНОСТЬ === */
 @media (max-width: 768px) {
   .priority-column {
-    min-width: 260px;
-    padding: 15px;
-    min-height: 450px;
-    overflow: visible; /* 🔴 ТОЖЕ МЕНЯЕМ для мобилок */
+    min-height: 200px;
+    height: auto; /* На мобилках высота по содержимому */
   }
   
   .column-header h3 {
@@ -176,14 +247,22 @@
     padding: 12px;
     margin-bottom: 10px;
   }
+  
+  /* Уменьшаем тени на мобилках для производительности */
+  .task-card:hover {
+    box-shadow: 
+      0 0 15px rgba(255, 255, 255, 0.1),
+      0 5px 20px rgba(0, 0, 0, 0.4);
+  }
 }
 
 /* Стили для перетаскивания */
 .task-card.dragging {
   opacity: 0.7;
   transform: scale(1.02);
-  box-shadow: 0 0 20px currentColor !important;
+  box-shadow: 0 0 30px currentColor !important;
   z-index: 1000;
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Курсор при наведении на задачу */

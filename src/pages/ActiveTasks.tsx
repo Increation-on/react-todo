@@ -28,8 +28,9 @@ const ActiveTasks = () => {
 
     return (
         <div className="task-list">
-            <ul>
-                {activeTasks.map(task => ( // 🔥 МЕНЯЕМ tasks на activeTasks
+           {activeTasks.length !== 0 ? 
+           <ul>
+                {activeTasks.map(task => ( // 🔥 Меняем tasks на completedTasks
                     <Task
                         key={task.id}
                         task={task}
@@ -38,6 +39,7 @@ const ActiveTasks = () => {
                     />
                 ))}
             </ul>
+           : <div className="empty-list">Active tasks not found</div>} 
         </div>
     )
 }

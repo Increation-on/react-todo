@@ -2,6 +2,8 @@ import { useTaskStore } from "../store/TaskStore.tsx"
 import { useAuthStore } from "../store/AuthStore.tsx"
 import { useMemo, useCallback } from "react"
 import Task from './../components/tasks/Task.tsx'
+import './../styles/TaskList.css'
+
 
 const CompletedTasks = () => {
     // ✅ Получаем userId
@@ -28,7 +30,8 @@ const CompletedTasks = () => {
 
     return (
         <div className="task-list">
-            <ul>
+           {completedTasks.length !== 0 ? 
+           <ul>
                 {completedTasks.map(task => ( // 🔥 Меняем tasks на completedTasks
                     <Task
                         key={task.id}
@@ -38,6 +41,7 @@ const CompletedTasks = () => {
                     />
                 ))}
             </ul>
+           : <div className="empty-list">Completed tasks not found</div>} 
         </div>
     )
 }
