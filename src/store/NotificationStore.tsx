@@ -45,8 +45,6 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
       actions // ← Сохраняем actions
     };
     
-    console.log('🔔 showNotification:', newNotification);
-    
     set(state => ({
       notifications: [...state.notifications, newNotification]
     }));

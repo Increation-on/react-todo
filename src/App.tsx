@@ -11,7 +11,6 @@ const App = () => {
 
   const token = useAuthStore((state) => state.token);
 
-
   return (
     <Router>
       <div className="app-wrapper">
