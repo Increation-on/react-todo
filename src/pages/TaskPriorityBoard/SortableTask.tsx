@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import React, { useState, useRef, useEffect } from 'react'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { Priority } from './../../types/task.types.ts';
-import { useTaskNotifications } from './../../hooks/ui/useTaskNotification.tsx';
-import './../../styles/TaskPriorityBoard.css';
-import MobilePriorityMenu from '../../ui/MobilePriorityMenu.tsx';
+import { useTaskNotifications } from './../../hooks/ui/useTaskNotification.tsx'
+import MobilePriorityMenu from '../../ui/MobilePriorityMenu.tsx'
+import './../../styles/SortableTask.css'
 
 interface SortableTaskProps {
   task: {

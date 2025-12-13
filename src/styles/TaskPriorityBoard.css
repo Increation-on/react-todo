@@ -109,113 +109,6 @@
   opacity: 0.8;
 }
 
-/* === ОСНОВНЫЕ СТИЛИ КАРТОЧКИ === */
-.task-card {
-  position: relative;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
-              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-              background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: grab;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  overflow: visible;
-  z-index: 1;
-}
-
-.task-card:hover {
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 
-    0 0 20px rgba(255, 255, 255, 0.2),
-    0 5px 25px rgba(0, 0, 0, 0.4);
-  z-index: 10;
-}
-
-/* 🔥 КРИТИЧЕСКИ ВАЖНО: Стили для drag состояния */
-.task-card.dragging {
-  cursor: grabbing;
-  opacity: 0.7;
-  transform: rotate(2deg);
-  z-index: 1000;
-  /* 🔥 ПОЛНАЯ БЛОКИРОВКА ВСЕХ ЖЕСТОВ ПРИ DRAG */
-  touch-action: none !important;
-  pointer-events: none;
-}
-
-/* 🔥 БЛОКИРОВКА СКРОЛЛА ВО ВРЕМЯ DRAG */
-.task-card.dragging,
-.task-card.dragging * {
-  touch-action: none !important;
-}
-
-.task-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.task-text {
-  flex: 1;
-  color: rgba(255, 255, 255, 0.9);
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.95rem;
-  line-height: 1.4;
-  word-break: break-word;
-}
-
-/* Приоритетные стили для карточек */
-.task-card.high {
-  border-left: 4px solid #ff5555;
-}
-
-.task-card.medium {
-  border-left: 4px solid #ffaa55;
-}
-
-.task-card.low {
-  border-left: 4px solid #55ff55;
-}
-
-.task-card.none {
-  border-left: 4px solid rgba(255, 255, 255, 0.3);
-}
-
-/* === СТИЛИ МЕНЮ КНОПКИ === */
-.task-menu-button {
-  display: flex;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.7);
-  border-radius: 6px;
-  width: 30px;
-  height: 30px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  padding: 0;
-  position: relative;
-  z-index: 2;
-}
-
-.task-menu-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: scale(1.1);
-}
-
-
 /* === АДАПТИВНОСТЬ === */
 @media (max-width: 768px) {
   .priority-board {
@@ -232,47 +125,18 @@
     font-size: 1rem;
   }
   
-  .task-card {
-    min-height: 65px;
-    padding: 18px 16px;
-    /* 🔥 РАЗРЕШАЕМ СКРОЛЛ ТОЛЬКО КОГДА НЕ DRAG */
-    touch-action: pan-y;
-  }
-  
-  /* Индикатор что можно тащить (опционально) */
-  .task-card::before {
-    content: '☰';
-    position: absolute;
-    left: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.3);
-    font-size: 16px;
-  }
-  
-  .task-content {
-    margin-left: 20px;
-  }
-  
-  .task-menu-button {
-    width: 38px;
-    height: 38px;
-    font-size: 1.5rem;
-    display: flex;
-  }
-  
-  
-  /* Убираем hover эффекты на мобилках */
-  .task-card:hover {
-    transform: none !important;
-  }
-  
-  /* 🔥 БЛОКИРОВКА СКРОЛЛА ВСЕЙ СТРАНИЦЫ ПРИ DRAG */
+  /* 🔥 БЛОКИРОВКА СКРОЛЛА БЕЗ СМЕЩЕНИЯ ЭКРАНА */
   body.task-dragging-active {
     overflow: hidden !important;
-    position: fixed;
-    width: 100%;
-    height: 100%;
+    position: relative; /* ⚠️ УБИРАЕМ FIXED */
+    height: 100vh;
+    touch-action: none;
+  }
+  
+  /* Предотвращаем любые жесты браузера */
+  body.task-dragging-active * {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
   }
 }
 
@@ -301,11 +165,3 @@
     padding: 30px;
   }
 }
-
-/* Для десктопа - скрываем кнопку меню */
-@media (min-width: 769px) {
-  .task-menu-button {
-    display: none;
-  }
-}
-

@@ -2,6 +2,7 @@ import { useTaskStore } from "../store/TaskStore.tsx"
 import { useAuthStore } from "../store/AuthStore.tsx"
 import { useMemo, useCallback } from "react"
 import Task from './../components/tasks/Task.tsx'
+import { usePriorityTasks } from "../hooks/tasks/usePriorityTasks.tsx"
 import './../styles/TaskList.css'
 
 
@@ -10,15 +11,15 @@ const CompletedTasks = () => {
     const userId = useAuthStore(state => state.getUserId())
     
     // ✅ Получаем задачи
-    const allTasks = useTaskStore(state => state.tasks)
+    const {sortedTasks} = usePriorityTasks()
     const toggleTask = useTaskStore(state => state.toggleTask)
     const deleteTask = useTaskStore(state => state.deleteTask)
 
     // ✅ Фильтруем СНАЧАЛА по userId, ПОТОМ по completed
     const completedTasks = useMemo(() => {
-        const userTasks = allTasks.filter(task => task.userId === userId)
+        const userTasks = sortedTasks.filter(task => task.userId === userId)
         return userTasks.filter(task => task.completed)
-    }, [allTasks, userId]) // 🔥 Добавляем userId
+    }, [sortedTasks, userId]) // 🔥 Добавляем userId
 
     const handleToggle = useCallback((id: number | string) => {
         toggleTask(id)

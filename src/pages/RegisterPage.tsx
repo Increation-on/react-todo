@@ -44,7 +44,7 @@ const RegisterPage = () => {
 
   return (
     <div className="login-page">
-      <h2>Регистрация</h2>
+      <h2>Register</h2>
       
       {submitError && (
         <div style={{ color: 'red', marginBottom: '10px' }}>
@@ -76,7 +76,7 @@ const RegisterPage = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Пароль"
+            placeholder="Password"
             required
             autoComplete="new-password"
             className={errors.password ? 'error-field' : ''}
@@ -93,7 +93,7 @@ const RegisterPage = () => {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Повторите пароль"
+            placeholder="Confirm Passwrod"
             required
             autoComplete="new-password"
             className={errors.confirmPassword ? 'error-field' : ''}
@@ -105,11 +105,11 @@ const RegisterPage = () => {
           )}
         </div>
         
-        <button type="submit">Зарегистрироваться</button>
+        <button type="submit">Register</button>
       </form>
       
       <p style={{ marginTop: '20px' }}>
-        Уже есть аккаунт? <Link to="/login">Войти</Link>
+        Already have an account? <Link to="/login">Login</Link>
       </p>
     </div>
   );

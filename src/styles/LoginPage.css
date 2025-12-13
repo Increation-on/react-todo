@@ -292,4 +292,28 @@
   .login-page h2 {
     font-size: 1.8rem;
   }
+
+  .login-page button[type="submit"] {
+    /* Уменьшаем размеры */
+    padding: 1rem 0.5rem;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    
+    /* Гарантируем перенос текста */
+    white-space: normal;
+    word-wrap: break-word;
+    line-height: 1.3;
+    
+    /* Уменьшаем отступы */
+    margin-top: 0.8rem;
+  }
+}
+
+/* Дополнительно для очень маленьких экранов */
+@media (max-width: 360px) {
+  .login-page button[type="submit"] {
+    font-size: 0.9rem;
+    padding: 0.8rem 0.4rem;
+    letter-spacing: 0.5px;
+  }
 }

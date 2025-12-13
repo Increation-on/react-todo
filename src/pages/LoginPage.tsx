@@ -53,7 +53,7 @@ const LoginPage = () => {
 
     return (
         <div className="login-page">
-            <h2>Вход в систему</h2>
+            <h2>Enter the Matrix</h2>
 
             {/* 🔥 ОШИБКИ СЕРВЕРА */}
             {submitError && (
@@ -94,7 +94,7 @@ const LoginPage = () => {
                         autoComplete="current-password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Пароль"
+                        placeholder="Password"
                         required
                         className={errors.password ? 'error-field' : ''}
                     />
@@ -106,11 +106,11 @@ const LoginPage = () => {
                     )}
                 </div>
 
-                <button type="submit">Войти</button>
+                <button type="submit">Login</button>
             </form>
 
             <p style={{ marginTop: '20px' }}>
-                Нет аккаунта? <Link to="/register">Зарегистрироваться</Link>
+                no account? <Link to="/register">Register</Link>
             </p>
         </div>
     );

@@ -1,6 +1,4 @@
 // components/TaskList.tsx
-import { useMemo } from 'react'; // <-- Добавляем useMemo
-import { useAuthStore } from "../../../store/AuthStore.tsx";
 import { useTaskStore } from "../../../store/TaskStore.tsx";
 import { useTasksAPI } from "../../../hooks/api/useTasksAPI.tsx";
 import {useTaskOperations} from '../../../hooks/tasks/useTaskOperations.tsx'
@@ -14,21 +12,8 @@ import { usePriorityTasks } from '../../../hooks/tasks/usePriorityTasks.tsx';
 import './../../../styles/TaskList.css'
 
 const TaskList: React.FC = () => {
-  const userId = useAuthStore(state => state.getUserId());
   const addTask = useTaskStore(state => state.addTask);
   const { sortedTasks, isLoadingPriorirty } = usePriorityTasks();
-  // 🔥 ПОЛУЧАЕМ ВСЕ ЗАДАЧИ РЕАКТИВНО
-  const allTasks = useTaskStore(state => state.tasks);
-  
-  // 🔥 ФИЛЬТРУЕМ И СОРТИРУЕМ В КОМПОНЕНТЕ
-  const userTasks = useMemo(() => {
-    if (!userId) return [];
-    return allTasks
-      .filter(task => task.userId === userId)
-      .sort((a, b) => a.orderIndex - b.orderIndex);
-  }, [allTasks, userId]);
-  
-  console.log('📋 [TaskList] userTasks:', userTasks.length);
   
   // Хуки для операций
   const taskNotify = useTaskNotifications();
