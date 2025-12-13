@@ -1,0 +1,147 @@
+/* SortableTask.css - Стили для сортируемой карточки задачи */
+
+/* === ОСНОВНЫЕ СТИЛИ КАРТОЧКИ === */
+.task-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overflow: visible;
+  z-index: 1;
+}
+
+.task-card:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.2),
+    0 5px 25px rgba(0, 0, 0, 0.4);
+  z-index: 10;
+}
+
+/* 🔥 КРИТИЧЕСКИ ВАЖНО: Стили для drag состояния */
+.task-card.dragging {
+  cursor: grabbing;
+  opacity: 0.7;
+  transform: rotate(2deg);
+  z-index: 1000;
+  /* 🔥 ПОЛНАЯ БЛОКИРОВКА ВСЕХ ЖЕСТОВ ПРИ DRAG */
+  touch-action: none !important;
+  pointer-events: none;
+}
+
+/* Блокируем скролл только для самой карточки при drag */
+.task-card.dragging * {
+  touch-action: none !important;
+}
+
+.task-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.task-text {
+  flex: 1;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+/* Приоритетные стили для карточек */
+.task-card.high {
+  border-left: 4px solid #ff5555;
+}
+
+.task-card.medium {
+  border-left: 4px solid #ffaa55;
+}
+
+.task-card.low {
+  border-left: 4px solid #55ff55;
+}
+
+.task-card.none {
+  border-left: 4px solid rgba(255, 255, 255, 0.3);
+}
+
+/* === СТИЛИ МЕНЮ КНОПКИ === */
+.task-menu-button {
+  display: flex;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 6px;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.task-menu-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: scale(1.1);
+}
+
+/* === МОБИЛЬНЫЕ СТИЛИ КАРТОЧКИ === */
+@media (max-width: 768px) {
+  .task-card {
+    min-height: 65px;
+    padding: 18px 16px;
+    /* 🔥 РАЗРЕШАЕМ СКРОЛЛ ТОЛЬКО КОГДА НЕ DRAG */
+    touch-action: pan-y;
+  }
+  
+  /* Индикатор что можно тащить (опционально) */
+  
+  .task-content {
+    margin-left: 20px;
+  }
+  
+  .task-menu-button {
+    width: 38px;
+    height: 38px;
+    font-size: 1.5rem;
+    display: flex;
+  }
+  
+  /* Убираем hover эффекты на мобилках */
+  .task-card:hover {
+    transform: none !important;
+  }
+}
+
+/* Для десктопа - скрываем кнопку меню */
+@media (min-width: 769px) {
+  .task-menu-button {
+    display: none;
+  }
+}
+
+/* Стили для состояния с открытым меню */
+.task-card.menu-open {
+  z-index: 1000 !important;
+  position: relative;
+}
