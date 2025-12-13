@@ -11,7 +11,6 @@ const App = () => {
 
   const token = useAuthStore((state) => state.token);
 
-  console.log('🏠 App render. Auth:', !!token);
 
   return (
     <Router>

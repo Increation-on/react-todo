@@ -38,7 +38,6 @@ interface TaskStore {
     getTotalTasks: () => number;
     getActiveTasks: () => Task[];
     getCompletedTasks: () => Task[];
-    clearTasksForCurrentUser: () => void;
     updateTaskText: (id: number | string, newText: string) => void;
 }
 
@@ -92,7 +91,6 @@ export const useTaskStore = create<TaskStore>()(
                     };
                 });
 
-                console.log(`🔄 Колонка ${priority} пересортирована`);
             },
 
             // 🔥 DnD МЕТОД 2: Изменение приоритета задачи
@@ -138,8 +136,6 @@ export const useTaskStore = create<TaskStore>()(
 
                     return { tasks: updatedTasks };
                 });
-
-                console.log(`🚀 Задача ${taskId} перемещена в ${newPriority} на позицию ${newOrderIndex}`);
             },
 
             // 🔥 ПОЛУЧЕНИЕ ЗАДАЧ ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ
@@ -176,8 +172,6 @@ export const useTaskStore = create<TaskStore>()(
                         priority: 'none',
                         orderIndex: nextOrderIndex
                     };
-
-                    console.log(`✅ Добавляем задачу:`, newTask);
 
                     return {
                         tasks: [...state.tasks, newTask]
@@ -252,10 +246,6 @@ export const useTaskStore = create<TaskStore>()(
                     )
                 }));
             },
-
-            clearTasksForCurrentUser: () => {
-                console.log('🔄 Кэш задач очищен для смены пользователя');
-            }
         }),
 
         // 🎯 PERSIST CONFIG
@@ -264,11 +254,8 @@ export const useTaskStore = create<TaskStore>()(
             version: 2, // Увеличиваем версию для миграции
 
             migrate: (persistedState: any, version: number) => {
-                console.log(`🔧 Миграция с версии ${version} до 2`);
-
                 // Для версии 0 или 1 делаем полную миграцию
                 if (version < 2) {
-                    console.log('🔧 Принудительная миграция для старых версий');
 
                     if (!persistedState || !persistedState.tasks) {
                         return { tasks: [] }; // Возвращаем пустой стор
@@ -300,8 +287,3 @@ export const useTaskStore = create<TaskStore>()(
         }
     )
 );
-
-// 🔥 ХЕЛПЕР ДЛЯ ИНИЦИАЛИЗАЦИИ
-export const initializeTaskStore = () => {
-    console.log('📦 TaskStore инициализирован с поддержкой DnD');
-};

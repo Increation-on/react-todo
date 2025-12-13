@@ -25,8 +25,6 @@ export const PublicOnlyRoute = ({
   
   if (token) {
     const from = (location.state as any)?.from || redirectTo;
-    console.log('🔄 Уже авторизован, редирект на:', from);
-    
     return <Navigate to={from} replace />;
   }
   

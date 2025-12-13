@@ -31,8 +31,6 @@ export const useApi = <T,>(): ApiReturn<T> => { // запятая после T -
         // Перед запросом: включаем загрузку, сбрасываем ошибки
         setIsLoading(true)
         setError(null)
-        console.log('Start loading')
-
         try {
             // Выполняем HTTP запрос
             const response = await fetch(url)
@@ -42,8 +40,6 @@ export const useApi = <T,>(): ApiReturn<T> => { // запятая после T -
 
             // Парсим JSON из ответа
             const result = await response.json()
-            console.log('Данные получены:', result)
-
             // Возвращаем результат - TypeScript считает что это тип T
             return result
 
@@ -52,7 +48,6 @@ export const useApi = <T,>(): ApiReturn<T> => { // запятая после T -
             // В TypeScript error имеет тип unknown, поэтому нужно преобразовать
             const errorMessage = error instanceof Error ? error.message : 'Unknown error'
             setError(errorMessage)
-            console.log('Ошибка:', error)
             
             // Пробрасываем ошибку дальше для обработки в вызывающем коде
             throw error
