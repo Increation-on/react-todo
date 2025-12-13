@@ -20,7 +20,6 @@ const TaskPriorityBoard: React.FC = () => {
     
     const handleMediaChange = (e: MediaQueryListEvent | MediaQueryList) => {
       const mobile = e.matches;
-      console.log('📱 TaskPriorityBoard: isMobile changed to', mobile);
       setIsMobile(mobile);
     };
     
@@ -33,8 +32,6 @@ const TaskPriorityBoard: React.FC = () => {
   const columnOrder = isMobile 
     ? ['none', 'high', 'medium', 'low'] as const
     : ['high', 'medium', 'low', 'none'] as const;
-  
-  console.log('🎯 Column order:', columnOrder, 'isMobile:', isMobile);
 
   const { reorderTasksInColumn, updateTaskPriority } = useTaskStore();
   const getUserId = useAuthStore(state => state.getUserId);
@@ -72,7 +69,6 @@ const TaskPriorityBoard: React.FC = () => {
     }
     
     if (changes.reorderedColumns && Array.isArray(changes.reorderedColumns)) {
-      console.log(`📊 Пересортировка колонок: ${changes.reorderedColumns.join(', ')}`)
       
       changes.reorderedColumns.forEach((priority: Priority) => {
         const columnTasks = newTasks[priority]
@@ -91,8 +87,6 @@ const TaskPriorityBoard: React.FC = () => {
       console.error('Пользователь не авторизован');
       return;
     }
-    
-    console.log(`🔄 Menu: Moving task ${taskId} to ${newPriority}`);
     updateTaskPriority(taskId, newPriority, 0);
   }, [updateTaskPriority, getUserId]);
 

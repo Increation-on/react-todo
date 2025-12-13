@@ -67,7 +67,7 @@ const AppNavigation = ({ isSticky = false }: AppNavigationProps) => {
   
   // Определяем иконку в зависимости от isMobile
   const toggleIcon = isMobile 
-    ? (isExpanded ? '▼' : '▲')  // На мобилках: вертикальные стрелки
+    ? (isExpanded ? '▲' : '▼' )  // На мобилках: вертикальные стрелки 
     : (isExpanded ? '◀' : '▶'); // На десктопе: горизонтальные стрелки
   
   return (

@@ -32,13 +32,6 @@ export const ProtectedRoute = ({
 }: ProtectedRouteProps) => {
   const token = useAuthStore((state) => state.token);
   const location = useLocation();
-  
-  // 🎯 Логирование для отладки (потом убрать)
-  console.log('🛡️ ProtectedRoute:', {
-    path: location.pathname,
-    hasToken: !!token,
-    timestamp: new Date().toISOString()
-  });
 
   // ⏳ Загрузка (если нужно проверять токен с сервером)
   if (showLoading) {
@@ -52,8 +45,6 @@ export const ProtectedRoute = ({
 
   // 🚫 Нет токена - редирект на логин
   if (!token) {
-    console.log('🚫 Доступ запрещен, редирект на:', redirectTo);
-    
     return (
       <Navigate 
         to={redirectTo} 

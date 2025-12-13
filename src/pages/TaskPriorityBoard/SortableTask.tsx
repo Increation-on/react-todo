@@ -27,12 +27,6 @@ const SortableTask: React.FC<SortableTaskProps> = ({
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const { info } = useTaskNotifications();
 
-  console.log('🔍 SortableTask render:', { 
-    taskId: task.id, 
-    isMenuOpen,
-    hasButtonRef: !!menuButtonRef.current 
-  });
-
   const {
     attributes,
     listeners,
@@ -51,13 +45,11 @@ const SortableTask: React.FC<SortableTaskProps> = ({
   });
 
   const toggleMenu = (e: React.MouseEvent) => {
-    console.log('🔍 Toggle menu clicked');
     e.stopPropagation();
     e.preventDefault();
     
     if (!isMenuOpen && menuButtonRef.current) {
       const rect = menuButtonRef.current.getBoundingClientRect();
-      console.log('🔍 Button rect:', rect);
       setIsMenuOpen(true);
     } else {
       setIsMenuOpen(!isMenuOpen);
@@ -65,8 +57,6 @@ const SortableTask: React.FC<SortableTaskProps> = ({
   };
 
   const handlePrioritySelect = (newPriority: Priority) => {
-    console.log('🔍 Priority selected from menu:', newPriority);
-    
     const priorityNames: Record<Priority, string> = {
       none: 'Non-priority',
       low: 'Low',
@@ -107,12 +97,6 @@ const SortableTask: React.FC<SortableTaskProps> = ({
   const showMenuButton = isMobile;
   const menuButtonRect = menuButtonRef.current?.getBoundingClientRect();
 
-  console.log('🔍 Before render:', { 
-    showMenuButton, 
-    isMenuOpen, 
-    menuButtonRect 
-  });
-
   return (
     <>
       <div
@@ -147,7 +131,6 @@ const SortableTask: React.FC<SortableTaskProps> = ({
         <MobilePriorityMenu
           isOpen={isMenuOpen}
           onClose={() => {
-            console.log('🔍 Closing menu from parent');
             setIsMenuOpen(false);
           }}
           currentPriority={task.priority}

@@ -37,7 +37,6 @@ export const useAuthStore = create<AuthStore>((set, get) => {
 
   // Функция авто-выхода
   const performAutoLogout = () => {
-    console.log('🔓 Авто-выход: токен истёк');
     localStorage.removeItem('token');
     set({ token: null, currentUser: null });
     showNotification('Сессия истекла. Пожалуйста, войдите снова.', 'warning');
@@ -141,7 +140,6 @@ export const useAuthStore = create<AuthStore>((set, get) => {
     },
     
     startTokenWatch: () => {
-  console.log('⏰ Запуск слежения за токеном');
   
   const intervalId = setInterval(() => {
     const token = localStorage.getItem('token');
@@ -167,7 +165,6 @@ export const useAuthStore = create<AuthStore>((set, get) => {
   }, 30000); 
   
   return () => {
-    console.log('⏰ Остановка слежения');
     clearInterval(intervalId);
   };
 }

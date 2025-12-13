@@ -91,8 +91,6 @@ export const useTaskDnD = ({
     if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
       document.body.classList.add('task-dragging-active');
     }
-    
-    console.log('🟢 Начало перетаскивания задачи:', taskId);
   }, [orderedTasks]);
 
   const handleDragMove = useCallback((event: DragMoveEvent) => {
@@ -116,18 +114,11 @@ export const useTaskDnD = ({
     setDragOverColumn(null);
     
     if (!over || !active.data.current || !over.data.current) {
-      console.log('❌ Перетаскивание отменено');
       return createDragResult(orderedTasks);
     }
 
     const activeData = active.data.current;
     const overData = over.data.current;
-    
-    console.log('📊 Перетаскивание:', {
-      from: activeData.priority,
-      to: overData.priority,
-      type: overData.type
-    });
 
     let newTasks = orderedTasks;
     const priorityChanges: Array<{
@@ -177,11 +168,8 @@ export const useTaskDnD = ({
     
     // Вызываем колбэк
     if (onDragComplete) {
-      console.log('🔄 Вызываем onDragComplete');
       onDragComplete(result);
     }
-    
-    console.log('✅ Перетаскивание завершено');
     return result;
     
   }, [orderedTasks, onDragComplete]);
@@ -189,10 +177,8 @@ export const useTaskDnD = ({
   const handleDragCancel = useCallback(() => {
     // 🔥 РАЗБЛОКИРУЕМ СКРОЛЛ СТРАНИЦЫ ПРИ ОТМЕНЕ
     document.body.classList.remove('task-dragging-active');
-    
     setActiveTask(null);
     setDragOverColumn(null);
-    console.log('🟡 Перетаскивание отменено');
   }, []);
 
   return {

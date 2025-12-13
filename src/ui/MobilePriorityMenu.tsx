@@ -90,7 +90,6 @@ const MobilePriorityMenu: React.FC<MobilePriorityMenuProps> = ({
               key={priority}
               className={`menu-item ${priority}`}
               onClick={() => {
-                console.log('🔍 Menu item clicked:', priority);
                 onPrioritySelect(priority);
                 onClose();
               }}
